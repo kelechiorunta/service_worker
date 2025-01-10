@@ -1,0 +1,22 @@
+{
+  "name": "service-worker",
+  "version": "1.0.0",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "service-worker",
+    "javascript"
+  ],
+  "author": "Kelechi Orunta",
+  "license": "ISC",
+  "description": "Service worker learning application with Node and Javascript",
+  "dependencies": {
+    "sharp": "^0.33.5"
+  },
+  "devDependencies": {
+    "express": "^4.21.2"
+  }
+}
