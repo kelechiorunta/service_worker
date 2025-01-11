@@ -4,6 +4,16 @@
     padding: 0;
 }
 
+body{
+    width:100%;
+    min-height:100vh;
+    display: flex;
+    flex-direction: column;
+    // align-items: flex-start;
+    gap: 1.5rem;
+    // background-color: blue;
+}
+
 .frame {
     position: relative;
     max-width: 100%;
@@ -12,25 +22,66 @@
     min-width:500px;
     min-height:500px;
     border: 1px soild;
-}
-img{
-    position: absolute;
-    top:0;
-    left:0;
-    width:100%;
-    height: 500px;
-    display: block;
-    aspect-ratio: 1/1;
-    object-fit: cover;
-    object-position: center;
-    transition: all 3s ease;
+    background-color: black;
+    overflow: hidden;
     
+    img{
+        position: absolute;
+        top:0;
+        left:0;
+        width:100%;
+        height: 500px;
+        display: block;
+        aspect-ratio: 1/1;
+        object-fit: cover;
+        object-position: center;
+        transition: all 3s ease;
+        
+    }
+}
+
+.placeholder{
+    display: block;
+    width: 100%;
+    height: 100%;
+    margin: auto;
+}
+
+.frame::before {
+    content:'';
+    inset:0;
+    // position: absolute;
+    z-index: 0;
+    animation: pulse 1.5s infinite;
+    // background-color: white;
+
+}
+
+.frame > img.fall{
+    transform: translateY(20px);
+}
+
+@keyframes pulse {
+    0%{
+        background-color: rgba(255, 255, 255, 0);
+    }
+    50%{
+        background-color: rgba(255, 255, 255, 0.5);
+    }
+    100% {
+        background-color: rgba(255, 255, 255, 0);
+    }
+}
+
+.frame.loaded::before{
+    // content: none;
+    background-color: none;
+    animation: none;
 }
 
 .frame.loaded > img{
     opacity: 1;
-    transition: all 3s ease;
-    
+    transition: all 3s ease;   
 }
 
 .frame > img{
