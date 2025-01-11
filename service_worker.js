@@ -1,78 +1,7 @@
 // /** Service worker file */
 
-// const storeInCache = async (req, res) => {
-//     const cache = await caches.open('image-cache');
-//     await cache.put(req, res);
-// };
-
-// const cacheFirst = async ({ req, preloadResponse }) => {
-//     // Check if the request exists in the cache
-//     const cachedResponse = await caches.match(req);
-//     if (cachedResponse) {
-//         return cachedResponse;
-//     }
-
-//     // Use the preload response if available
-//     if (preloadResponse) {
-//         console.info('Using preload response:', preloadResponse);
-//         storeInCache(req, preloadResponse.clone());
-//         return preloadResponse;
-//     }
-
-//     // Fallback to fetching from the network
-//     try {
-//         const networkResponse = await fetch(req.clone());
-//         storeInCache(req, networkResponse.clone());
-//         console.log('Fetched from network:', networkResponse);
-//         return networkResponse;
-//     } catch (err) {
-//         console.error('Fetch failed:', err.message);
-//         throw err;
-//     }
-// };
-
-// self.addEventListener('install', () => {
-//     console.log("Service Worker: Installed");
-// });
-
-// const enableNavigationPreload = async () => {
-//     if (self.registration.navigationPreload) {
-//         // Enable navigation preload
-//         await self.registration.navigationPreload.enable();
-//     }
-// };
-
-// self.addEventListener('activate', (event) => {
-//     event.waitUntil(enableNavigationPreload());
-// });
-
-// const pattern1 = /^\/main.js/;
-// const pattern2 = /^\/index.html/;
-
-
-// self.addEventListener('fetch', (event) => {
-//     const url = new URL(event.request.url);
-//     //Use waitUntil to ensure the preloadResponse promise is properly awaited
-//     //If the request does not involve styling or css static files then proceed
-//     //to the cached store.
-//     if (event.request.destination !== 'style' ){
-//         event.waitUntil(
-//             (async () => {
-//                 const preloadResponse = await event.preloadResponse;
-//                 event.respondWith(
-//                     cacheFirst({
-//                         req: event.request,
-//                         preloadResponse: preloadResponse,
-//                     })
-//                 );
-//             })()
-//         );   
-//     }
-// });
-
-
 const CACHE_NAME = 'image-cache-v2'; // Update version to force a cache refresh
-const CRITICAL_ASSETS = ['main.js', 'index.html']; // Always fetch these from the network
+const CRITICAL_ASSETS = ['index.html']; // Always fetch these from the network
 
 const storeInCache = async (req, res) => {
     const cache = await caches.open(CACHE_NAME);
@@ -126,17 +55,17 @@ const networkFirst = async ({ req }) => {
 
 self.addEventListener('install', (event) => {
     console.log('Service Worker: Installed');
-    // event.waitUntil(
-    //     caches.open(CACHE_NAME).then((cache) => {
-    //         console.log('Caching static assets');
-    //         return cache.addAll([
-    //             '/index.html', // Add your initial assets here
-    //             '/styles.css',
-    //             '/main.js',
-    //             '/favicon.ico',
-    //         ]);
-    //     })
-    // );
+    event.waitUntil(
+        caches.open(CACHE_NAME).then((cache) => {
+            console.log('Caching static assets');
+        //     return cache.addAll([
+        //    '/index.html', // Add your initial assets here
+        //    '/styles.css',
+        //    '/main.js',
+        //    '/favicon.ico',
+        //     ]);
+        })
+    );
 });
 
 const enableNavigationPreload = async () => {
@@ -191,3 +120,25 @@ self.addEventListener('fetch', (event) => {
     }
 });
 
+// import {registerRoute} from 'workbox-routing';
+// import {CacheFirst} from 'workbox-strategies';
+// import {ExpirationPlugin} from 'workbox-expiration';
+
+// registerRoute(
+//   ({request}) => request.destination === 'image',
+//   // Use a cache-first strategy with the following config:
+//   new CacheFirst({
+//     // You need to provide a cache name when using expiration.
+//     cacheName: 'images',
+//     plugins: [
+//       new ExpirationPlugin({
+//         // Keep at most 50 entries.
+//         maxEntries: 50,
+//         // Don't keep any entries for more than 30 days.
+//         maxAgeSeconds: 30 * 24 * 60 * 60,
+//         // Automatically cleanup if quota is exceeded.
+//         purgeOnQuotaError: true
+//       })
+//     ]
+//   })
+// );
