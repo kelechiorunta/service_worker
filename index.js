@@ -77,6 +77,25 @@ server.get('/fullImg', async(req, res) => {
     }
 })
 
+const images = ['./imgs/next1.jpg', './imgs/next2.jpg', './imgs/next4.jpg']
+
+server.get('/smallImg/:picId', async(req, res) => {
+
+    const id = req.params.picId;
+
+    try{
+        res.setHeader('Content-Type', 'image/jpeg');
+        const fullImagePath = await readFile(path.resolve(__dirname, images[id - 1]))
+        const reducedImg = await sharp(fullImagePath).resize(60).toBuffer()
+        res.send(reducedImg)
+        console.log("Small Images buffered successfully")
+    }
+    catch(err){
+        console.log("Failed to load Picture")
+        return res.status(500).json({error: "Failed to buffer effectively"})
+    }
+})
+
 server.listen(PORT, () => {
     console.log(`Server is listening on PORT ${PORT}`)
 })

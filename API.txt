@@ -1,9 +1,19 @@
-Sample of Service Worker script
+Sample of Service Worker script. Inside the script, the service worker instance
+is usually termed as self.
+
+//Function to store the subsequent fetch requests and responses
+//intercepted by the service Worker using the caches storage API
 
 const putInCache = async(req, res) => {
     const cache = await caches.open('v1');
     await cache.put(req, res)
 }
+
+//Function passed as a callback for the handling of asynchronous
+//serviceWorker intercepeted fetches (cached requests and responses) and
+//falling back to the network fetch(request) if there is no cache.
+//The preloadResponse API returns existing cached preload responses in parallel
+//to the service Worker installation
 
 const firstCache = async({req, preloadResponse}) => {
 
@@ -29,11 +39,17 @@ const firstCache = async({req, preloadResponse}) => {
     }
 }
 
-self.addEventListener('install', async() => {
+//Install event triggered when the sefvice worker is installed
+//It asynchronously add cached resources for subsequent serviceWorker
+//fetching.
+
+self.addEventListener('install', async(event) => {
     console.log("Worker has been installed");
     const cache = await caches.open('v1');
-    await cache.addAll(['/', '/about', '/contact'])
+    event.waitUntil(await cache.addAll(['/', '/about', '/contact']))
 })
+
+//Function to enable the navigation preload in the browser
 
 const enablePreload = async() => {
     if (self.registration.navigationPreload) {
@@ -46,6 +62,7 @@ self.addEventListener('activate', async(event) => {
     event.waitUntil(enablePreload())
 })
 
+//Function to handle serviceWorker fetch operation
 self.addEventListener('fetch', async(event) => {
     event.respondWith(firstCache({req: event.request, preloadResponse: event.preloadResponse}))
 })
