@@ -29,6 +29,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const frame = document.querySelector('.frame');
     const img = frame.querySelector('img');
     const btn = document.querySelector('.unregister')
+    const placeholders = document.querySelectorAll('.placeholder')
 
     btn.addEventListener('click', () => {
         const input = document.querySelector('.value');
@@ -44,14 +45,91 @@ document.addEventListener('DOMContentLoaded', () => {
     }
                     
         const loaded = () => {
-            frame.classList.add('loaded')
+            frame.classList.add('loaded');
         }
                 
         if (img.complete) {
             loaded()
+        } else {
+            img.addEventListener('load', loaded)
         }
-        img.addEventListener('load', loaded)
+
+        const placeholderLoaded = () => {
+            placeholders.forEach((placeholder) => placeholder.classList.add('loaded'));
+        }
+
+        placeholders.forEach(placeholder => {
+            const placeholderImg = placeholder.querySelector('img');
+
+            if (placeholderImg.complete) {
+                placeholderLoaded()
+            }else{
+                placeholderImg.addEventListener('load', placeholderLoaded)
+            }
+        })
+
         frame.style.setProperty('background-image', 'url(/fullImg)')
+
+    const createModal = (event, index) => {
+        const modalContainer = document.createElement('div');
+        modalContainer.setAttribute('class', 'modal');
+        modalContainer.style.setProperty('display', 'flex')
+        modalContainer.style.setProperty('flex-direction', 'column')
+        modalContainer.style.setProperty('align-items', 'center');
+        modalContainer.style.setProperty('justify-content', 'center');
+        const content = document.createElement('div');
+        const closeBtn = document.createElement('button');
+        const contentContainer = document.createElement('div');
+        const imgContent = document.createElement('img');
+        imgContent.src = event.target.src;
+        contentContainer.style.setProperty('display', 'flex')
+        contentContainer.style.setProperty('position', 'relative')
+        contentContainer.style.setProperty('flex-direction', 'column')
+        contentContainer.style.setProperty('align-items', 'center');
+        contentContainer.style.setProperty('justify-content', 'center');
+        contentContainer.style.setProperty('width', '600px');
+        contentContainer.style.setProperty('height', '600px');
+        contentContainer.style.setProperty('background-color', 'rgba(0,0,0,0.8)');
+        contentContainer.style.setProperty('margin', 'auto');
+        contentContainer.style.setProperty('padding', '2rem');
+        contentContainer.style.setProperty('border-radius', '20px');
+        imgContent.style.setProperty('width', '400px');
+        imgContent.style.setProperty('height', '400px');
+        imgContent.style.setProperty('object-fit', 'cover');
+        imgContent.style.setProperty('object-position', 'center');
+        imgContent.style.setProperty('border-radius', '20px');
+        content.style.setProperty('width', '400px');
+        content.style.setProperty('height', '400px');
+        content.style.setProperty('background-color', 'white');
+        content.style.setProperty('border-radius', '20px');
+        content.style.setProperty('margin', 'auto');
+        content.style.setProperty('overflow', 'hidden');
+        content.style.setProperty('background-image',  `url(/smallImg/${index + 1})`);
+        content.style.setProperty('background-position',  `center`);
+        content.style.setProperty('background-size',  `cover`);
+        content.append(imgContent);
+        closeBtn.style.setProperty('padding', '1rem');
+        closeBtn.style.setProperty('width', 'max-content');
+        closeBtn.style.setProperty('position', 'absolute');
+        closeBtn.style.setProperty('right', '0');
+        closeBtn.style.setProperty('top', '0');
+        closeBtn.style.setProperty('cursor', 'pointer');
+        closeBtn.style.setProperty('background-color', 'rgba(255,255,255,0.7');
+        closeBtn.textContent = 'X';
+        closeBtn.addEventListener('click', function(){
+            this.parentElement.parentElement.remove();
+        })
+        contentContainer.append(content, closeBtn)
+        modalContainer.appendChild(contentContainer)
+        document.body.append(modalContainer);
+    }    
+   
+    placeholders.forEach((placeholder, index) => {
+        const image = placeholder.querySelector('img');
+        image.addEventListener('click', (e) => {
+            createModal(e, index);
+        })
+    })
 
     const intersectingOptions = {
         root: null,
