@@ -1,0 +1,51 @@
+Sample of Service Worker script
+
+const putInCache = async(req, res) => {
+    const cache = await caches.open('v1');
+    await cache.put(req, res)
+}
+
+const firstCache = async({req, preloadResponse}) => {
+
+    const cachedFirst = await caches.match(req);
+    if (cachedFirst) {
+        return cachedFirst
+    }
+
+    const preloadCache = await preloadResponse;
+    if (preloadCache) {
+        putInCache(req, preloadCache.clone())
+        return preloadCache
+    }
+
+    try{
+        const fallbackCache = await fetch(req.clone())
+        if (fallbackCache) {
+            putInCache(req, fallbackCache)
+            return fallbackCache
+        }
+    }catch(err){
+        console.error(err);
+    }
+}
+
+self.addEventListener('install', async() => {
+    console.log("Worker has been installed");
+    const cache = await caches.open('v1');
+    await cache.addAll(['/', '/about', '/contact'])
+})
+
+const enablePreload = async() => {
+    if (self.registration.navigationPreload) {
+        // Enable navigation preload
+        await self.registration.navigationPreload.enable();
+    }
+}
+
+self.addEventListener('activate', async(event) => {
+    event.waitUntil(enablePreload())
+})
+
+self.addEventListener('fetch', async(event) => {
+    event.respondWith(firstCache({req: event.request, preloadResponse: event.preloadResponse}))
+})

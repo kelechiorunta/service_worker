@@ -28,6 +28,20 @@ document.addEventListener('DOMContentLoaded', () => {
     
     const frame = document.querySelector('.frame');
     const img = frame.querySelector('img');
+    const btn = document.querySelector('.unregister')
+
+    btn.addEventListener('click', () => {
+        const input = document.querySelector('.value');
+        enterValue(input.value)
+        input.value = "";
+    })
+
+    const enterValue = (text) => {
+        const li = document.createElement('li');
+        li.textContent = text;
+        document.querySelector('.list').append(li);
+        li.scrollIntoView({behavior: "smooth"})
+    }
                     
         const loaded = () => {
             frame.classList.add('loaded')
@@ -51,11 +65,7 @@ document.addEventListener('DOMContentLoaded', () => {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
                 console.log(entry.target)
-                // if (entry.target.classList.contains('img')) {
-                entry.target.classList.add('fall')
-                    // entry.target.style.setProperty('transform', `translateY(${20}px)`)
-                    // entry.target.parentElement.style.setProperty('background-position-y', `${yPos}px`)
-                // }
+                entry.target.classList.toggle('fall')
             }
         })
     }
