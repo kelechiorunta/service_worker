@@ -213,4 +213,26 @@ h2 {
   height: 100%;
   background-color: rgba(0, 0, 0, 0.5);
   z-index: 10;
+}
+
+.about_parallax {
+  /* The image used */
+  background-image: url("./imgs/next2.jpg");
+  width: 100%;
+  /* Full height */
+  height: 90vh;
+  position: relative;
+  /* Create the parallax scrolling effect */
+  background-attachment: fixed;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+.about_parallax::before {
+  content: "";
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 10;
 }/*# sourceMappingURL=style.css.map */
