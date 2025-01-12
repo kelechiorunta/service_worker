@@ -68,7 +68,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         })
 
-        frame.style.setProperty('background-image', 'url(/fullImg)')
+        frame.style.setProperty('background-image', 'url(/fullImg')
 
     const createModal = (event, index) => {
         const modalContainer = document.createElement('div');

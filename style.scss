@@ -181,15 +181,46 @@ h2{
 }
 
 .about_container{
-    color: white;
+    // color: white;
+    // background-color:rgb(216,201,222);
     background-color: rgba(0,0,0,0.8);
+    // background-image: url('./imgs/background.jpg');
+    background-position: center;
+    background-size: cover;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    align-items: center;
+    justify-content: center;
     // padding: 2rem;
     height: 70vh;
 
     .about{
-        margin-top: 5rem;
+        // position: absolute;
+        // transform: translate(45.5%, 50%);
+        width: auto;
+        margin: 7rem auto;
+        padding: 10px;
         color: white;
+        text-overflow: ellipsis;
     }
+
+    .text {
+        background-color: transparent;//rgb(219,200,222); //rgba(0,0,0,1);//none;//white;//transparent;
+        color: transparent;
+        font-size: 7vw; 
+        font-weight: 400;
+        margin: auto;
+        padding: 10px;
+        width: auto;
+        text-align: center;
+        // position: absolute;
+        // top: 50%;
+        // left: 50%;
+        // transform: translate(-50%, -150%);
+        mix-blend-mode: screen;
+        -webkit-text-stroke: 1px white;
+      }
 }
 
 .contact_container{
@@ -274,3 +305,9 @@ h2{
         z-index: 10;
     }
   }
+
+  .iframe {
+    max-height: 100vh;
+  }
+
+  
