@@ -150,13 +150,34 @@ h2 {
 }
 
 .about_container {
-  color: white;
   background-color: rgba(0, 0, 0, 0.8);
+  background-position: center;
+  background-size: cover;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  align-items: center;
+  justify-content: center;
   height: 70vh;
 }
 .about_container .about {
-  margin-top: 5rem;
+  width: auto;
+  margin: 7rem auto;
+  padding: 10px;
   color: white;
+  text-overflow: ellipsis;
+}
+.about_container .text {
+  background-color: transparent;
+  color: transparent;
+  font-size: 7vw;
+  font-weight: 400;
+  margin: auto;
+  padding: 10px;
+  width: auto;
+  text-align: center;
+  mix-blend-mode: screen;
+  -webkit-text-stroke: 1px white;
 }
 
 .contact_container {
@@ -235,4 +256,8 @@ h2 {
   height: 100%;
   background-color: rgba(0, 0, 0, 0.5);
   z-index: 10;
+}
+
+.iframe {
+  max-height: 100vh;
 }/*# sourceMappingURL=style.css.map */
