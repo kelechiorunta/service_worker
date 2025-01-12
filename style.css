@@ -5,6 +5,10 @@
   font-family: "Poppins", serif;
 }
 
+html {
+  width: 100%;
+}
+
 body {
   width: 100%;
   min-height: 100vh;
@@ -20,17 +24,17 @@ body {
   background-size: cover;
   background-position: center;
   min-width: 500px;
-  min-height: 70vh;
+  min-height: 60vh;
   border: 1px soild;
   background-color: black;
   overflow: hidden;
 }
 .frame img {
-  position: absolute;
   top: 0;
   left: 0;
   width: 100%;
-  height: 500px;
+  height: 710px;
+  min-height: 400px;
   display: block;
   aspect-ratio: 1/1;
   -o-object-fit: cover;
@@ -40,9 +44,25 @@ body {
   transition: all 3s ease;
 }
 
+.landing-title {
+  font-size: 4rem;
+}
+
+.subtitle {
+  font-size: 3rem;
+}
+
 h1 {
   padding: 2rem;
   top: 25%;
+  left: 5%;
+  position: absolute;
+  color: white;
+}
+
+h2 {
+  padding: 2rem;
+  top: 40%;
   left: 5%;
   position: absolute;
   color: white;
@@ -129,13 +149,23 @@ h1 {
   position: fixed;
 }
 
-.container {
+.about_container {
+  color: white;
+  background-color: rgba(0, 0, 0, 0.8);
+  height: 70vh;
+}
+.about_container .about {
+  margin-top: 5rem;
+  color: white;
+}
+
+.contact_container {
   color: white;
   background-color: black;
   padding: 2rem;
   height: 70vh;
 }
-.container .about, .container .contact {
+.contact_container .contact {
   margin-top: 5rem;
   color: white;
 }
@@ -161,4 +191,26 @@ h1 {
 }
 .mainHeader .primary_nav li a {
   text-decoration: none;
+}
+
+.parallax {
+  /* The image used */
+  background-image: url("./imgs/next1.jpg");
+  width: 100%;
+  /* Full height */
+  height: 90vh;
+  position: relative;
+  /* Create the parallax scrolling effect */
+  background-attachment: fixed;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+.parallax::before {
+  content: "";
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 10;
 }/*# sourceMappingURL=style.css.map */
