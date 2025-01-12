@@ -115,6 +115,7 @@ document.addEventListener('DOMContentLoaded', () => {
         closeBtn.style.setProperty('top', '0');
         closeBtn.style.setProperty('cursor', 'pointer');
         closeBtn.style.setProperty('background-color', 'rgba(255,255,255,0.7');
+        closeBtn.style.setProperty('border-top-right-radius', '20px');
         closeBtn.textContent = 'X';
         closeBtn.addEventListener('click', function(){
             this.parentElement.parentElement.remove();
