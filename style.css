@@ -45,11 +45,11 @@ body {
 }
 
 .landing-title {
-  font-size: 4rem;
+  font-size: 6vw;
 }
 
-.subtitle {
-  font-size: 3rem;
+.sub-title {
+  font-size: 3vw;
 }
 
 h1 {
@@ -163,6 +163,7 @@ h2 {
 .about_container .about {
   width: auto;
   margin: 7rem auto;
+  font-size: 4vw;
   padding: 10px;
   color: white;
   text-overflow: ellipsis;
