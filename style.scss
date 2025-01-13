@@ -56,11 +56,11 @@ body{
 }
 
 .landing-title{
-    font-size: 4rem;
+    font-size: 6vw;
 }
 
-.subtitle{
-    font-size: 3rem;
+.sub-title{
+    font-size: 3vw;
 }
 
 @media screen {
@@ -200,6 +200,7 @@ h2{
         // transform: translate(45.5%, 50%);
         width: auto;
         margin: 7rem auto;
+        font-size: 4vw;
         padding: 10px;
         color: white;
         text-overflow: ellipsis;

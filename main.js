@@ -155,6 +155,8 @@ document.addEventListener('DOMContentLoaded', () => {
         const child = document.querySelectorAll('.frame img')[0];
         pageObserver.observe(child)
     // })
+
+    // requestAnimationFrame(pageIntersection)
     
 
     registerServiceWorker('./service_worker.js');
