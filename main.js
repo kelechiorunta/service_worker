@@ -270,75 +270,33 @@ myslides.forEach((slide, index) => {
     }
 });
 
+//learning to implement the requestAnimationFrame
+let start;
+let pos;
 
+let obj = document.querySelector('.obj');
+let animateBtn = document.querySelector('.animate');
+let endAnimateBtn = document.querySelector('.endAnimate');
+let animateId;
 
-// function enqueueTask(taskHandler, taskData) {
-//     taskList.push({
-//       handler: taskHandler,
-//       data: taskData,
-//     });
-  
-//     totalTaskCount++;
-  
-//     if (!taskHandle) {
-//       taskHandle = requestIdleCallback(runTaskQueue, { timeout: 1000 });
-//     }
-  
-//     scheduleStatusRefresh();
-//   }
+const animate = (timeStamp) => {
 
-// function runTaskQueue(deadline) {
-//     while (
-//       (deadline.timeRemaining() > 0 || deadline.didTimeout) &&
-//       taskList.length
-//     ) {
-//       const task = taskList.shift();
-//       currentTaskNumber++;
-  
-//       task.handler(task.data);
-//       scheduleStatusRefresh();
-//     }
-  
-//     if (taskList.length) {
-//       taskHandle = requestIdleCallback(runTaskQueue, { timeout: 1000 });
-//     } else {
-//       taskHandle = 0;
-//     }
-//   }
+    if (!start || pos > document.body.clientWidth) start = timeStamp;
 
-//   function scheduleStatusRefresh() {
-//     if (!statusRefreshScheduled) {
-//       requestAnimationFrame(updateDisplay);
-//       statusRefreshScheduled = true;
-//     }
-//   }
+    pos = (timeStamp - start) * 1;//Math.min((timeStamp - start) * 1, 200);
 
-//   function updateDisplay() {
-//     const scrolledToEnd =
-//       logElem.scrollHeight - logElem.clientHeight <= logElem.scrollTop + 1;
-  
-//     if (totalTaskCount) {
-//       if (progressBarElem.max !== totalTaskCount) {
-//         totalTaskCountElem.textContent = totalTaskCount;
-//         progressBarElem.max = totalTaskCount;
-//       }
-  
-//       if (progressBarElem.value !== currentTaskNumber) {
-//         currentTaskNumberElem.textContent = currentTaskNumber;
-//         progressBarElem.value = currentTaskNumber;
-//       }
-//     }
-  
-//     if (logFragment) {
-//       logElem.appendChild(logFragment);
-//       logFragment = null;
-//     }
-  
-//     if (scrolledToEnd) {
-//       logElem.scrollTop = logElem.scrollHeight - logElem.clientHeight;
-//     }
-  
-//     statusRefreshScheduled = false;
-//   }
+    obj.style.transform = `translateX(${pos}px)`;
+    // if (pos < 200) {
+        animateId = requestAnimationFrame(animate)
+    // }
+}
 
+const endAnimate = () => {
+    cancelAnimationFrame(animateId)
+}
 
+animateBtn.addEventListener('click', ()=> {
+    requestAnimationFrame(animate)
+} )
+
+endAnimateBtn.addEventListener('click', endAnimate)
