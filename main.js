@@ -161,3 +161,184 @@ document.addEventListener('DOMContentLoaded', () => {
 
     registerServiceWorker('./service_worker.js');
 })
+
+let slideContainer = document.querySelector('.slide_container');
+let myslides = slideContainer.querySelectorAll('.contact_slide');
+const activateBtn = document.querySelector('.activateBtn');
+
+// Global state variables
+let taskList = [];
+let totalTaskCount = 0;
+let prevSlideIndex = 0;
+let currentTaskNumber = 0;
+let taskHandle = null;
+
+// Log and activate the slide
+const logSlide = (slideIndex) => {
+    myslides.forEach((slide, index) => {
+        // Determine the previous and next slide indices
+        const prevSlideIndex = slideIndex === 0 ? myslides.length - 1 : slideIndex - 1;
+        const nextSlideIndex = (slideIndex + 1) % myslides.length;
+
+        if (index === slideIndex) {
+            // Current slide: scroll to position 0
+            slide.style.transform = "translateX(0%)";
+            slide.style.transition = "transform 0.5s ease";
+            slide.classList.add('active');
+            // return
+        } else if (index === prevSlideIndex) {
+            // Previous slide: scroll to position -100%
+            slide.style.transform = "translateX(-100%)";
+            slide.style.transition = "transform 0.5s ease";
+            slide.classList.remove('active');
+        } else if (index === nextSlideIndex) {
+            // Next slide: scroll to position 100%
+            slide.style.transform = "translateX(100%)";
+            slide.style.transition = "transform 0.5s ease";
+            slide.classList.remove('active');
+        }
+         else {
+            // All other slides: move them out of view
+            slide.style.transform = "translateX(100%)";
+            slide.style.transition = "none"; // Instantly move off-screen
+        }
+        // animateSlide(slideIndex)
+    });
+    
+    console.log(`Slide ${slideIndex + 1} is now active.`);
+
+};
+
+
+let n = 0;
+
+// Activate the button to enqueue tasks
+activateBtn.addEventListener('click', () => {
+    n = (n + 1) % myslides.length; // Loop back to the first slide
+    // animateSlide(n)
+    enqueueTask(logSlide, n);
+});
+
+// Enqueue a task using `requestIdleCallback`
+const enqueueTask = (taskHandler, taskIndex) => {
+    taskList.push({ handler: taskHandler, indexTask: taskIndex });
+    totalTaskCount++;
+
+    // Schedule the task if none is currently running
+    if (!taskHandle) {
+        taskHandle = requestIdleCallback(runTask, { timeout: 50 });
+    }
+};
+
+// Process tasks during idle time
+const runTask = (deadline) => {
+    while ((deadline.timeRemaining() > 0 || deadline.didTimeout) && taskList.length) {
+        const task = taskList.shift();
+        task.handler(task.indexTask); // Execute the task handler
+        animateSlide(task.indexTask)
+    }
+
+    // Reset taskHandle if no tasks remain
+    if (taskList.length) {
+        taskHandle = requestIdleCallback(runTask, { timeout: 50 });
+    } else {
+        taskHandle = null;
+    }
+    
+};
+
+// Use `requestAnimationFrame` for smooth transition animations
+const animateSlide = (slideIndex) => {
+    const activeSlide = myslides[slideIndex];
+    const previousSlide = myslides[prevSlideIndex];
+
+    // Example animation logic
+    requestAnimationFrame(() => {
+        activeSlide.style.opacity = 1;
+        activeSlide.style.transform = "translateX(0)";
+        previousSlide.style.opacity = 1;
+        previousSlide.style.transform = "translateX(-100%)";
+    });
+};
+
+// Add smooth transitions to each slide
+myslides.forEach((slide, index) => {
+    slide.style.transition = "opacity 0.5s ease, transform 0.5s ease";
+    if (index !== 0) {
+        slide.style.opacity = 0;
+        slide.style.transform = "translateX(100%)";
+    }
+});
+
+
+
+// function enqueueTask(taskHandler, taskData) {
+//     taskList.push({
+//       handler: taskHandler,
+//       data: taskData,
+//     });
+  
+//     totalTaskCount++;
+  
+//     if (!taskHandle) {
+//       taskHandle = requestIdleCallback(runTaskQueue, { timeout: 1000 });
+//     }
+  
+//     scheduleStatusRefresh();
+//   }
+
+// function runTaskQueue(deadline) {
+//     while (
+//       (deadline.timeRemaining() > 0 || deadline.didTimeout) &&
+//       taskList.length
+//     ) {
+//       const task = taskList.shift();
+//       currentTaskNumber++;
+  
+//       task.handler(task.data);
+//       scheduleStatusRefresh();
+//     }
+  
+//     if (taskList.length) {
+//       taskHandle = requestIdleCallback(runTaskQueue, { timeout: 1000 });
+//     } else {
+//       taskHandle = 0;
+//     }
+//   }
+
+//   function scheduleStatusRefresh() {
+//     if (!statusRefreshScheduled) {
+//       requestAnimationFrame(updateDisplay);
+//       statusRefreshScheduled = true;
+//     }
+//   }
+
+//   function updateDisplay() {
+//     const scrolledToEnd =
+//       logElem.scrollHeight - logElem.clientHeight <= logElem.scrollTop + 1;
+  
+//     if (totalTaskCount) {
+//       if (progressBarElem.max !== totalTaskCount) {
+//         totalTaskCountElem.textContent = totalTaskCount;
+//         progressBarElem.max = totalTaskCount;
+//       }
+  
+//       if (progressBarElem.value !== currentTaskNumber) {
+//         currentTaskNumberElem.textContent = currentTaskNumber;
+//         progressBarElem.value = currentTaskNumber;
+//       }
+//     }
+  
+//     if (logFragment) {
+//       logElem.appendChild(logFragment);
+//       logFragment = null;
+//     }
+  
+//     if (scrolledToEnd) {
+//       logElem.scrollTop = logElem.scrollHeight - logElem.clientHeight;
+//     }
+  
+//     statusRefreshScheduled = false;
+//   }
+
+

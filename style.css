@@ -261,4 +261,39 @@ h2 {
 
 .iframe {
   max-height: 100vh;
+}
+
+.slide_container {
+  position: relative;
+  overflow: hidden; /* Prevent slides from showing outside the container */
+  width: 200px;
+  height: 200px;
+  margin: auto;
+  border: 2px solid;
+}
+.slide_container .active {
+  transform: translateX(0);
+  z-index: 10; /* Ensure the active slide appears above others */
+}
+
+.contact_slide {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  font-size: 4vw;
+  text-align: center;
+  color: white;
+  background-color: blue;
+  transform: translateX(100%); /* Start all slides off-screen */
+  transition: transform 0.5s ease; /* Smooth sliding animation */
+}
+
+.activateBtn {
+  padding: 1rem;
+  font-size: 3vw;
+  width: -moz-max-content;
+  width: max-content;
+  margin: auto;
 }/*# sourceMappingURL=style.css.map */
