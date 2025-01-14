@@ -236,7 +236,27 @@ h2{
     }
 }
 
-.mainHeader{
+.dragText {
+    width: 200px;
+    height: 200px;
+    background-color: green;
+    color: black;
+    border: 2px solid;
+}
+
+.dropText {
+    width: 200px;
+    height: 200px;
+    background-color: white;
+    color: black;
+    border: 2px solid;
+}
+
+.dropText.dragover {
+    background-color: purple;
+  }
+
+.mainHeader, .aboutHeader, .contactHeader{
     display: flex;
     flex-direction: column;
     position: fixed;
@@ -369,14 +389,23 @@ h2{
     color: black;
 }
 
-.progress-container {
+.progress-container, .about-progress-container, .contact-progress-container {
     width: 100%;
     height: 8px;
     background: #ccc;
   }
   
-  .progress-bar {
+  .progress-bar, .about-progress-bar, .contact-progress-bar {
     height: 8px;
     background: #04AA6D;
     width: 0%;
+  }
+
+  @keyframes spin {
+    0%{
+        transform: rotate(0);
+    }
+    100%{
+        transform: rotate(360deg);
+    }
   }

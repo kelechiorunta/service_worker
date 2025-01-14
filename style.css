@@ -192,7 +192,27 @@ h2 {
   color: white;
 }
 
-.mainHeader {
+.dragText {
+  width: 200px;
+  height: 200px;
+  background-color: green;
+  color: black;
+  border: 2px solid;
+}
+
+.dropText {
+  width: 200px;
+  height: 200px;
+  background-color: white;
+  color: black;
+  border: 2px solid;
+}
+
+.dropText.dragover {
+  background-color: purple;
+}
+
+.mainHeader, .aboutHeader, .contactHeader {
   display: flex;
   flex-direction: column;
   position: fixed;
@@ -205,14 +225,14 @@ h2 {
   padding: auto 0.5rem;
   box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.5);
 }
-.mainHeader .primary_nav {
+.mainHeader .primary_nav, .aboutHeader .primary_nav, .contactHeader .primary_nav {
   display: flex;
   justify-content: space-evenly;
   width: 100%;
   padding: 1rem;
   list-style-type: none;
 }
-.mainHeader .primary_nav li a {
+.mainHeader .primary_nav li a, .aboutHeader .primary_nav li a, .contactHeader .primary_nav li a {
   text-decoration: none;
 }
 
@@ -317,14 +337,23 @@ h2 {
   color: black;
 }
 
-.progress-container {
+.progress-container, .about-progress-container, .contact-progress-container {
   width: 100%;
   height: 8px;
   background: #ccc;
 }
 
-.progress-bar {
+.progress-bar, .about-progress-bar, .contact-progress-bar {
   height: 8px;
   background: #04AA6D;
   width: 0%;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }/*# sourceMappingURL=style.css.map */
