@@ -1,4 +1,8 @@
 document.addEventListener('DOMContentLoaded', () => {
+
+  const scrollheader = document.querySelector('.mainHeader');
+  const scrollContainer = scrollheader.querySelector('.progress-container');
+  const progressBar = scrollContainer.querySelector('.progress-bar')
     /**Install the service worker agent */
 
     const registerServiceWorker = async(scriptUrl) => {
@@ -157,7 +161,19 @@ document.addEventListener('DOMContentLoaded', () => {
     // })
 
     // requestAnimationFrame(pageIntersection)
-    
+    // window.onscroll = function() {myFunction()};
+
+const scrollProgress = () => {
+  
+  console.log(progressBar)
+  
+  var winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+  var height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+  var scrolled = (winScroll / height) * 100;
+  progressBar.style.width = scrolled + "%";
+}
+
+window.addEventListener('scroll', scrollProgress)
 
     registerServiceWorker('./service_worker.js');
 })
@@ -299,4 +315,21 @@ animateBtn.addEventListener('click', ()=> {
     requestAnimationFrame(animate)
 } )
 
-endAnimateBtn.addEventListener('click', endAnimate)
+endAnimateBtn.addEventListener('click', endAnimate);
+
+const contents = document.querySelector('.contents')
+// Access the text node inside the element
+const textNode = contents.firstChild;
+
+const range1 = new Range();
+
+// Set the range within the text node (offsets correspond to character positions)
+range1.setStart(textNode, 6); // Starting at the 6th character: "there"
+range1.setEnd(textNode, 22); // Ending after "new beginning"
+
+const textHighlight = new Highlight(range1);
+
+// Apply the highlight to the `contents_highlight` name
+CSS.highlights.set('contents_highlight', textHighlight);
+
+// When the user scrolls the page, execute myFunction 
