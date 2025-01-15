@@ -65,31 +65,12 @@ const createLoader = (activate) => {
             catch(err){
                 console.error(err, "Service worker not installed!")
             }finally{
-                createLoader(false)
+                // createLoader(false)
                 
                 loaderId = setTimeout(()=>{createLoader(false); clearTimeout(loaderId)}, 3000)
             }
         }
     }
-
-    navigator.serviceWorker.register('./service_worker.js', { scope: './' }).then((registration) => {
-        console.log('Service Worker registered:', registration);
-    
-        // Ensure the page listens for messages from the service worker
-        navigator.serviceWorker.addEventListener('message', (event) => {
-            if (event.data.action === 'showSpinner') {
-                createLoader(true);
-                alert("hello");
-            } else if (event.data.action === 'hideSpinner') {
-                createLoader(false);
-            }
-        });
-    
-    }).catch((error) => {
-        console.error('Service Worker registration failed:', error);
-    });
-
-    
 
     const frame = document.querySelector('.frame');
     const img = frame.querySelector('img');
@@ -403,55 +384,4 @@ const createLoader = (activate) => {
     CSS.highlights.set('contents_highlight', textHighlight);
     }
 
-    const dragText = document.querySelector('.dragText');
-    const dropText = document.querySelector('.dropText');
-    let dragged;
-
-    const dragHandler = (event) => {
-        event.target.classList.add("dragging");
-        event.dataTransfer.setData('text/html', event.target.textContent);
-        dragged = event.target;
-    }
-
-    const dropEnterHandler = (event) => {
-        event.preventDefault();
-        // console.log(event.dataTransfer.getData())
-        if (event.target.classList.contains("dropText")) {
-            event.target.classList.add("dragover");
-          }
-    }
-
-    const dropLeaveHandler = (event) => {
-        // console.log(event.dataTransfer.getData())
-        if (event.target.classList.contains("dropText")) {
-            event.target.classList.remove("dragover");
-          }
-    }
-    const dropOverHandler = (event) => {
-          event.preventDefault();
-    }
-    
-    const dropHandler = (event) => {
-        event.preventDefault();
-    // move dragged element to the selected drop target
-    if (event.target.classList.contains("dropText")) {
-        event.target.classList.remove("dragover");
-        event.target.appendChild(dragged);
-        // alert("Dropped")
-    }
-    } 
-
-    const dragEndHandler = (event) => {
-        event.target.classList.remove("dragging");
-    }
-
-    if (dragText && dropText) {
-        dragText.addEventlistener('dragend', dragEndHandler);
-        dragText.addEventListener('dragstart', dragHandler);
-        dropText.addEventListener('dragover', dropOverHandler);
-        dropText.addEventListener('dragenter', dropEnterHandler);
-        dropText.addEventListener('dragleave', dropLeaveHandler);
-        dropText.addEventListener('drop', dropHandler);
-
-    }
     
