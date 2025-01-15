@@ -10,7 +10,7 @@ document.addEventListener('DOMContentLoaded', () => {
    * Create loader and append to a container at initial loading time with service Worker
    */
 
-  const createLoader = (activate) => {
+const createLoader = (activate) => {
     const loader_container = document.createElement('div');
     loader_container.setAttribute('class', 'loader_container');
     loader_container.style.setProperty('position', 'fixed');
@@ -42,7 +42,6 @@ document.addEventListener('DOMContentLoaded', () => {
    
 
   }
-
     /**Install the service worker agent */
     // createLoader(true);
     const registerServiceWorker = async(scriptUrl) => {
@@ -60,22 +59,38 @@ document.addEventListener('DOMContentLoaded', () => {
                     loader_container.remove(); 
                 }else if (registeration && registeration.waiting) {
                     console.log("Service worker awaits your orders")
-                    loader_container.remove(); 
-                }else{
-                    registeration.unregister();
-                    console.log("Service worker exited")
-                }  
+                     loader_container.remove(); 
+                }
             }
             catch(err){
                 console.error(err, "Service worker not installed!")
             }finally{
                 createLoader(false)
+                
                 loaderId = setTimeout(()=>{createLoader(false); clearTimeout(loaderId)}, 3000)
             }
         }
     }
 
+    navigator.serviceWorker.register('./service_worker.js', { scope: './' }).then((registration) => {
+        console.log('Service Worker registered:', registration);
     
+        // Ensure the page listens for messages from the service worker
+        navigator.serviceWorker.addEventListener('message', (event) => {
+            if (event.data.action === 'showSpinner') {
+                createLoader(true);
+                alert("hello");
+            } else if (event.data.action === 'hideSpinner') {
+                createLoader(false);
+            }
+        });
+    
+    }).catch((error) => {
+        console.error('Service Worker registration failed:', error);
+    });
+
+    
+
     const frame = document.querySelector('.frame');
     const img = frame.querySelector('img');
     const btn = document.querySelector('.unregister')
@@ -223,9 +238,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
     registerServiceWorker('./service_worker.js');
 })
-
+    let myslides;
     let slideContainer = document.querySelector('.slide_container');
-    let myslides = slideContainer.querySelectorAll('.contact_slide');
+    if (slideContainer) {
+        myslides = slideContainer.querySelectorAll('.contact_slide');
+    }
     const activateBtn = document.querySelector('.activateBtn');
 
     // Global state variables
@@ -275,12 +292,14 @@ document.addEventListener('DOMContentLoaded', () => {
     let n = 0;
 
     // Activate the button to enqueue tasks
-    activateBtn.addEventListener('click', () => {
-        n = (n + 1) % myslides.length; // Loop back to the first slide
-        // animateSlide(n)
-        enqueueTask(logSlide, n);
-    });
-
+    if (activateBtn) {
+        activateBtn.addEventListener('click', () => {
+            n = (n + 1) % myslides.length; // Loop back to the first slide
+            // animateSlide(n)
+            enqueueTask(logSlide, n);
+        });    
+    }
+   
     // Enqueue a task using `requestIdleCallback`
     const enqueueTask = (taskHandler, taskIndex) => {
         taskList.push({ handler: taskHandler, indexTask: taskIndex });
@@ -324,14 +343,15 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     // Add smooth transitions to each slide
-    myslides.forEach((slide, index) => {
-        slide.style.transition = "opacity 0.5s ease, transform 0.5s ease";
-        if (index !== 0) {
-            slide.style.opacity = 0;
-            slide.style.transform = "translateX(100%)";
-        }
-    });
-
+    if (myslides) {
+        myslides.forEach((slide, index) => {
+            slide.style.transition = "opacity 0.5s ease, transform 0.5s ease";
+            if (index !== 0) {
+                slide.style.opacity = 0;
+                slide.style.transform = "translateX(100%)";
+            }
+        });
+    }
     //learning to implement the requestAnimationFrame
     let start;
     let pos;
@@ -357,15 +377,19 @@ document.addEventListener('DOMContentLoaded', () => {
         cancelAnimationFrame(animateId)
     }
 
-    animateBtn.addEventListener('click', ()=> {
-        requestAnimationFrame(animate)
-    } )
-
-    endAnimateBtn.addEventListener('click', endAnimate);
+    if (animateBtn) {
+        animateBtn.addEventListener('click', ()=> {
+            requestAnimationFrame(animate)
+        } )
+    }
+    if (endAnimateBtn) {
+        endAnimateBtn.addEventListener('click', endAnimate);
+    }
 
     const contents = document.querySelector('.contents')
     // Access the text node inside the element
-    const textNode = contents.firstChild;
+    if (contents) {
+        const textNode = contents.firstChild;
 
     const range1 = new Range();
 
@@ -377,9 +401,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Apply the highlight to the `contents_highlight` name
     CSS.highlights.set('contents_highlight', textHighlight);
-
-    // When the user scrolls the page, execute myFunction 
-
+    }
 
     const dragText = document.querySelector('.dragText');
     const dropText = document.querySelector('.dropText');
@@ -392,6 +414,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     const dropEnterHandler = (event) => {
+        event.preventDefault();
         // console.log(event.dataTransfer.getData())
         if (event.target.classList.contains("dropText")) {
             event.target.classList.add("dragover");
@@ -422,26 +445,13 @@ document.addEventListener('DOMContentLoaded', () => {
         event.target.classList.remove("dragging");
     }
 
-    dragText.addEventlistener('dragend', dragEndHandler);
-    dragText.addEventListener('dragstart', dragHandler);
-    dropText.addEventListener('dragover', dropOverHandler);
-    dropText.addEventListener('dragenter', dropEnterHandler);
-    dropText.addEventListener('dragleave', dropLeaveHandler);
-    dropText.addEventListener('drop', dropHandler);
+    if (dragText && dropText) {
+        dragText.addEventlistener('dragend', dragEndHandler);
+        dragText.addEventListener('dragstart', dragHandler);
+        dropText.addEventListener('dragover', dropOverHandler);
+        dropText.addEventListener('dragenter', dropEnterHandler);
+        dropText.addEventListener('dragleave', dropLeaveHandler);
+        dropText.addEventListener('drop', dropHandler);
 
-    const aboutheader = document.querySelector('.aboutHeader');
-    const aboutScrollContainer = aboutheader.querySelector('.about-progress-container');
-    const aboutProgressBar = aboutScrollContainer.querySelector('.about-progress-bar');
-
-     /**Scroll handler for the scroll indicator */
-     const scrollAboutProgress = () => {
-    
-    console.log(aboutProgressBar)
-        
-    var about_winScroll = document.body.scrollTop || document.documentElement.scrollTop;
-    var about_height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
-    var about_scrolled = (about_winScroll / about_height) * 100;
-    aboutProgressBar.style.width = about_scrolled + "%";
     }
     
-    window.addEventListener('scroll', scrollAboutProgress)

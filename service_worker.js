@@ -24,6 +24,7 @@ const cacheFirst = async ({ req, preloadResponse }) => {
 
     // Fallback to fetching from the network
     try {
+        
         const networkResponse = await fetch(req.clone());
         storeInCache(req, networkResponse.clone());
         console.log('Fetched from network:', networkResponse);
@@ -31,6 +32,8 @@ const cacheFirst = async ({ req, preloadResponse }) => {
     } catch (err) {
         console.error('Fetch failed:', err.message);
         throw err;
+    }finally{
+        console.log("Hello")
     }
 };
 
@@ -55,17 +58,26 @@ const networkFirst = async ({ req }) => {
 
 self.addEventListener('install', (event) => {
     console.log('Service Worker: Installed');
+
     event.waitUntil(
-        caches.open(CACHE_NAME).then((cache) => {
-            console.log('Caching static assets');
-        //     return cache.addAll([
-        //    '/index.html', // Add your initial assets here
-        //    '/styles.css',
-        //    '/main.js',
-        //    '/favicon.ico',
-        //     ]);
-        })
+        ( async () => {
+            const clients = await self.clients.matchAll();
+                clients.forEach((client) => {
+                    client.postMessage({ action: 'showSpinner' });
+                });
+            // caches.open(CACHE_NAME).then((cache) => {
+            //     console.log('Caching static assets');
+            // //     return cache.addAll([
+            // //    '/index.html', // Add your initial assets here
+            // //    '/styles.css',
+            // //    '/main.js',
+            // //    '/favicon.ico',
+            // //     ]);
+            // })
+        })()
+        
     );
+
 });
 
 const enableNavigationPreload = async () => {
@@ -76,10 +88,18 @@ const enableNavigationPreload = async () => {
 };
 
 self.addEventListener('activate', (event) => {
+    
+    // event.postMessage({ action: 'showSpinner' });
+
     event.waitUntil(
         (async () => {
             // Enable navigation preload
             await enableNavigationPreload();
+
+            const clients = await self.clients.matchAll();
+            clients.forEach((client) => {
+                client.postMessage({ action: 'showSpinner' });
+            });
 
             // Clean up old caches
             const cacheNames = await caches.keys();
