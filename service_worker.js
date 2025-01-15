@@ -61,19 +61,19 @@ self.addEventListener('install', (event) => {
 
     event.waitUntil(
         ( async () => {
-            const clients = await self.clients.matchAll();
-                clients.forEach((client) => {
-                    client.postMessage({ action: 'showSpinner' });
-                });
-            // caches.open(CACHE_NAME).then((cache) => {
-            //     console.log('Caching static assets');
-            // //     return cache.addAll([
-            // //    '/index.html', // Add your initial assets here
-            // //    '/styles.css',
-            // //    '/main.js',
-            // //    '/favicon.ico',
-            // //     ]);
-            // })
+            // const clients = await self.clients.matchAll();
+            //     clients.forEach((client) => {
+            //         client.postMessage({ action: 'showSpinner' });
+            //     });
+            caches.open(CACHE_NAME).then((cache) => {
+                console.log('Caching static assets');
+            //     return cache.addAll([
+            //    '/index.html', // Add your initial assets here
+            //    '/styles.css',
+            //    '/main.js',
+            //    '/favicon.ico',
+            //     ]);
+            })
         })()
         
     );
@@ -96,10 +96,10 @@ self.addEventListener('activate', (event) => {
             // Enable navigation preload
             await enableNavigationPreload();
 
-            const clients = await self.clients.matchAll();
-            clients.forEach((client) => {
-                client.postMessage({ action: 'showSpinner' });
-            });
+            // const clients = await self.clients.matchAll();
+            // clients.forEach((client) => {
+            //     client.postMessage({ action: 'showSpinner' });
+            // });
 
             // Clean up old caches
             const cacheNames = await caches.keys();
