@@ -3,6 +3,34 @@ document.addEventListener('DOMContentLoaded', () => {
   const scrollheader = document.querySelector('.mainHeader');
   const scrollContainer = scrollheader.querySelector('.progress-container');
   const progressBar = scrollContainer.querySelector('.progress-bar');
+  const imgSection = document.querySelector('.img_section');
+  const imgContainer = imgSection.querySelectorAll('.img_container')
+
+  //Implementing the modern Navigation API over the legacy history API
+  imgContainer.forEach(container => {
+    const docBtn = container.querySelector('button');
+    docBtn.addEventListener('click', () => {
+        navigation.navigate('./images');
+    })
+
+  })
+
+  navigation.addEventListener('navigate', (event) => {
+    const url = new URL(event.destination.url);
+    
+    console.log(url)
+    // Pass custom state if navigating to the "images" page
+    if (url.pathname.endsWith("/images/")) {
+        event.intercept({
+            async handler() {
+                // Add state data, such as metadata about the navigation
+                window.navigationState = { from: 'main', info: 'Navigating to images page' };
+                navigation.navigate(event.destination.url)
+            },
+            });
+    }
+});
+  
   
   let loaderId;
 
@@ -123,32 +151,47 @@ const createLoader = (activate) => {
         modalContainer.style.setProperty('display', 'flex')
         modalContainer.style.setProperty('flex-direction', 'column')
         modalContainer.style.setProperty('align-items', 'center');
+        modalContainer.style.setProperty('min-width', '300px');
+        modalContainer.style.setProperty('min-height', '300px');
         modalContainer.style.setProperty('justify-content', 'center');
         const content = document.createElement('div');
         const closeBtn = document.createElement('button');
         const contentContainer = document.createElement('div');
         const imgContent = document.createElement('img');
+        contentContainer.setAttribute('class', 'contentContainer');
+        imgContent.setAttribute('class', 'imgContent');
+        content.setAttribute('class', 'content');
         imgContent.src = event.target.src;
         contentContainer.style.setProperty('display', 'flex')
         contentContainer.style.setProperty('position', 'relative')
         contentContainer.style.setProperty('flex-direction', 'column')
         contentContainer.style.setProperty('align-items', 'center');
         contentContainer.style.setProperty('justify-content', 'center');
-        contentContainer.style.setProperty('width', '600px');
-        contentContainer.style.setProperty('height', '600px');
+        contentContainer.style.setProperty('max-width', '600px');
+        contentContainer.style.setProperty('max-height', '600px');
+        contentContainer.style.setProperty('width', '100%');
+        contentContainer.style.setProperty('height', '100%');
+        contentContainer.style.setProperty('min-width', '300px');
+        contentContainer.style.setProperty('min-height', '300px');
         contentContainer.style.setProperty('background-color', 'rgba(0,0,0,0.8)');
         contentContainer.style.setProperty('margin', 'auto');
         contentContainer.style.setProperty('padding', '2rem');
         contentContainer.style.setProperty('border-radius', '20px');
-        imgContent.style.setProperty('width', '400px');
-        imgContent.style.setProperty('height', '400px');
+        imgContent.style.setProperty('width', '100%');
+        imgContent.style.setProperty('height', '100%');
+        imgContent.style.setProperty('min-width', '200px');
+        imgContent.style.setProperty('min-height', '200px');
         imgContent.style.setProperty('object-fit', 'cover');
         imgContent.style.setProperty('object-position', 'center');
         imgContent.style.setProperty('border-radius', '20px');
-        content.style.setProperty('width', '400px');
-        content.style.setProperty('height', '400px');
+        content.style.setProperty('max-width', '400px');
+        content.style.setProperty('max-height', '400px');
+        content.style.setProperty('width', '100%');
+        content.style.setProperty('height', '100%');
         content.style.setProperty('background-color', 'white');
         content.style.setProperty('border-radius', '20px');
+        content.style.setProperty('min-width', '200px');
+        content.style.setProperty('min-height', '200px');
         content.style.setProperty('margin', 'auto');
         content.style.setProperty('overflow', 'hidden');
         content.style.setProperty('background-image',  `url(/smallImg/${index + 1})`);

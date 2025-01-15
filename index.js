@@ -19,6 +19,7 @@ server.use(express.static(path.resolve(__dirname)))
 const indexFile = path.resolve(__dirname, 'index.html');
 const aboutFile = path.resolve(__dirname, 'about.html');
 const contactFile = path.resolve(__dirname, 'contact.html');
+const imageFile = path.resolve(__dirname, 'images.html');
 
 server.get('/', (req, res) => {
     res.sendFile(indexFile)
@@ -30,6 +31,10 @@ server.get('/about', (req, res) => {
 
 server.get('/contact', (req, res) => {
     res.sendFile(contactFile)
+})
+
+server.get('/images', (req, res) => {
+    res.sendFile(imageFile)
 })
 
 server.get('/placeholderImg', async(req, res) => {
