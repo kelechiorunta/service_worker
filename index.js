@@ -101,6 +101,61 @@ server.get('/smallImg/:picId', async(req, res) => {
     }
 })
 
+const details = [
+    {title:"Monstera Deliciosa", 
+     content:`Monstera deliciosa, often called the
+      "Swiss Cheese Plant," is a tropical evergreen vine 
+      or shrub native to Central America. Its large, glossy, 
+      and uniquely perforated leaves make it a popular houseplant.
+      The plant thrives in warm, humid conditions and indirect sunlight.
+      Monstera deliciosa is known for its aerial roots, which help it climb trees in its natural habitat.
+      It can also produce fruit resembling a green ear of corn, with a sweet pineapple-like flavor when ripe.
+      This plant symbolizes growth and prosperity in many cultures.`
+    },
+    {title:"Alocasia Amazonica",
+    content:`Alocasia amazonica, commonly known as the
+     "Amazon Elephant's Ear," is a stunning hybrid plant with 
+     large, arrow-shaped leaves marked by prominent white veins 
+     on a dark green surface. Native to tropical Asia, it thrives 
+     in warm, humid environments with bright, indirect light. 
+     This plant requires well-draining soil to prevent root rot. 
+     Although not from the Amazon, its striking foliage is 
+     reminiscent of the lush rainforest aesthetics. 
+     Alocasia amazonica adds an exotic flair to gardens 
+     and indoor spaces but should be handled with care, 
+     as all parts of the plant are toxic if ingested.`
+    },
+    {title:"Dracaena Fragrans",
+    content:`Dracaena fragrans, or "Corn Plant,"
+     is a hardy, low-maintenance plant with sword-shaped 
+     leaves resembling corn foliage. It is native to tropical
+      Africa and can grow up to 15 feet tall in its natural 
+      habitat, though it remains smaller indoors. The plant 
+      occasionally blooms, producing small, fragrant white 
+      flowers in ideal conditions. Dracaena fragrans is 
+      well-suited for indoor spaces due to its air-purifying 
+      properties and ability to thrive in low light. It's a 
+      popular choice for offices and homes, symbolizing 
+      resilience and good fortune.`
+    },
+]
+
+server.get('/details/:index', (req, res) => {
+    const id = req.params.index
+    const readText = (buffer) => {
+        const readable = new Readable();
+        readable.push(buffer);
+        readable.push(null);
+        return readable
+    }
+
+    const readTextStream = readText(Buffer.from(details[id].toString()))
+
+    res.setHeader('Content-Type', 'application/json');
+    res.status(200).json(details[id])
+    // readTextStream.pipe(res);
+})
+
 server.listen(PORT, () => {
     console.log(`Server is listening on PORT ${PORT}`)
 })
