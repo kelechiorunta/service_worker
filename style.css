@@ -334,7 +334,7 @@ h2 {
   background-color: purple;
 }
 
-.mainHeader, .aboutHeader, .contactHeader {
+.mainHeader, .aboutHeader, .contactHeader, .imagesHeader {
   display: flex;
   flex-direction: column;
   position: fixed;
@@ -347,7 +347,7 @@ h2 {
   padding: auto 0.5rem;
   box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.5);
 }
-.mainHeader .primary_nav, .aboutHeader .primary_nav, .contactHeader .primary_nav {
+.mainHeader .primary_nav, .aboutHeader .primary_nav, .contactHeader .primary_nav, .imagesHeader .primary_nav {
   display: flex;
   justify-content: space-evenly;
   width: 100%;
@@ -355,7 +355,7 @@ h2 {
   list-style-type: none;
   font-size: 1.3vw;
 }
-.mainHeader .primary_nav li a, .aboutHeader .primary_nav li a, .contactHeader .primary_nav li a {
+.mainHeader .primary_nav li a, .aboutHeader .primary_nav li a, .contactHeader .primary_nav li a, .imagesHeader .primary_nav li a {
   text-decoration: none;
 }
 
@@ -483,16 +483,18 @@ h2 {
   color: black;
 }
 
-.progress-container, .about-progress-container, .contact-progress-container {
+.progress-container, .about-progress-container, .contact-progress-container, .images-progress-container {
   width: 100%;
-  height: 8px;
+  height: 10px;
   background: #ccc;
+  overflow: hidden;
 }
 
-.progress-bar, .about-progress-bar, .contact-progress-bar {
-  height: 8px;
+.progress-bar, .about-progress-bar, .contact-progress-bar, .images-progress-bar {
+  height: 10px;
   background: #04AA6D;
   width: 0%;
+  transition: width 0.1s ease-in-out;
 }
 
 @keyframes spin {
