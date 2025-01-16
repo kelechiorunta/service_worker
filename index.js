@@ -90,7 +90,7 @@ server.get('/smallImg/:picId', async(req, res) => {
 
     try{
         res.setHeader('Content-Type', 'image/jpeg');
-        const fullImagePath = await readFile(path.resolve(__dirname, images[id - 1]))
+        const fullImagePath = await readFile(path.resolve(__dirname, images[id]))
         const reducedImg = await sharp(fullImagePath).resize(60).toBuffer()
         res.send(reducedImg)
         console.log("Small Images buffered successfully")

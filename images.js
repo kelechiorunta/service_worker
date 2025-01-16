@@ -107,7 +107,7 @@ document.addEventListener('DOMContentLoaded', async() => {
             stateContainer.style.setProperty('z-index', '10');
             imgDetailsSummary.textContent = `DETAILS OF ${result?.title.toUpperCase()}`
             imgPic.src = `./imgs/next${parseInt(state) + 1}.jpg`;
-            imgPlaceholder.style.setProperty('background-image', `url(/smallImg/${parseInt(state) + 1}) `);
+            imgPlaceholder.style.setProperty('background-image', `url(/smallImg/${parseInt(state)}) `);
             imgPlaceholder.style.setProperty('width', `400px`);
             imgPlaceholder.style.setProperty('height', `400px`);
             // imgDetailsFrame.src =  `/details/${parseInt(state)}`;
