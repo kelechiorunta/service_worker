@@ -82,7 +82,7 @@ server.get('/fullImg', async(req, res) => {
     }
 })
 
-const images = ['./imgs/next1.jpg', './imgs/next2.jpg', './imgs/next4.jpg']
+const images = ['./imgs/next1.jpg', './imgs/next2.jpg', './imgs/next3.jpg', './imgs/next4.jpg']
 
 server.get('/smallImg/:picId', async(req, res) => {
 
