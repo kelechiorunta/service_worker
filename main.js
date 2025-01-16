@@ -7,30 +7,15 @@ document.addEventListener('DOMContentLoaded', () => {
   const imgContainer = imgSection.querySelectorAll('.img_container')
 
   //Implementing the modern Navigation API over the legacy history API
-  imgContainer.forEach(container => {
+  imgContainer.forEach((container, index) => {
     const docBtn = container.querySelector('button');
     docBtn.addEventListener('click', () => {
-        navigation.navigate('./images');
+        const state = index;//{id: index, text: "Hello from main.js"};
+        sessionStorage.setItem('navigationState', state);
+        navigation.navigate('./images' , {state});
     })
 
   })
-
-  navigation.addEventListener('navigate', (event) => {
-    const url = new URL(event.destination.url);
-    
-    console.log(url)
-    // Pass custom state if navigating to the "images" page
-    if (url.pathname.endsWith("/images/")) {
-        event.intercept({
-            async handler() {
-                // Add state data, such as metadata about the navigation
-                window.navigationState = { from: 'main', info: 'Navigating to images page' };
-                navigation.navigate(event.destination.url)
-            },
-            });
-    }
-});
-  
   
   let loaderId;
 
