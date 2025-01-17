@@ -15,4 +15,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     
     window.addEventListener('scroll', scrollAboutProgress)
+
+    console.log(navigation)
 })

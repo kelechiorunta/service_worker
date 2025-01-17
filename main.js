@@ -9,10 +9,11 @@ document.addEventListener('DOMContentLoaded', () => {
   //Implementing the modern Navigation API over the legacy history API
   imgContainer.forEach((container, index) => {
     const docBtn = container.querySelector('button');
-    docBtn.addEventListener('click', () => {
+    docBtn.addEventListener('click', async() => {
         const state = index;//{id: index, text: "Hello from main.js"};
         sessionStorage.setItem('navigationState', state);
-        navigation.navigate('./images' , {state});
+        const info = {name: "Orunta Kelechi"}
+        await navigation.navigate('./images' , {state}).finished;
     })
 
   })

@@ -68,6 +68,7 @@ document.addEventListener('DOMContentLoaded', async() => {
         }
     })
 
+    // console.log(navigation.currentEntry)
 
     // fetch(`/details/${param}`)
     //     .then(res => {return res.json()})
@@ -80,10 +81,12 @@ document.addEventListener('DOMContentLoaded', async() => {
         const result = await fetchState(state);
         console.log(result)
         console.log('State from sessionStorage:', state);
+        
         const stateContainer = document.querySelector('.state-display');
         const imgDetailsContainer = document.querySelector('.specie_frame .images_contents');
         const imgDetails = imgDetailsContainer.querySelector('details');
         const imgDetailsSummary = imgDetails.querySelector('summary');
+        const imageFrame = document.querySelector('.image_frame');
         const imgDetailsFrame = imgDetails.querySelector('iframe');
         const specieDetails = imgDetails.querySelector('.specie-details');
         const specieTitle = imgDetails.querySelector('.specie-title');
@@ -102,28 +105,28 @@ document.addEventListener('DOMContentLoaded', async() => {
                     placeholderImg.addEventListener('load', imgplaceholderLoaded)
                 }
             
-            console.log(imgPlaceholder)
+            // console.log(imgPlaceholder)
             stateContainer.textContent = result?.title//`${state}`;
             stateContainer.style.setProperty('z-index', '10');
             imgDetailsSummary.textContent = `DETAILS OF ${result?.title.toUpperCase()}`
-            imgPic.src = `./imgs/next${parseInt(state) + 1}.jpg`;
+            
+            // requestIdleCallback((idleObj) => {
+                // if (idleObj.didTimeout) {
+                    imgPic.src = `./imgs/next${parseInt(state) + 1}.jpg`;
+                    imgPic.style.setProperty('border', 'none');
+                // }
+            // }, {timeout: 1})
+            
             imgPlaceholder.style.setProperty('background-image', `url(/smallImg/${parseInt(state)}) `);
-            imgPlaceholder.style.setProperty('width', `400px`);
-            imgPlaceholder.style.setProperty('height', `400px`);
-            // imgDetailsFrame.src =  `/details/${parseInt(state)}`;
-            // imgDetailsFrame.style.setProperty('font-size', `2vw`);
-            // imgDetailsFrame.style.setProperty('border-radius', `10px`);
-            // imgDetailsFrame.style.setProperty('background-color', `white`);
-            
-            
+            imageFrame.style.setProperty('background-image', `url(/smallImg/${parseInt(state)}) `);
+            imgPlaceholder.style.setProperty('width', `60vh`);
+            imgPlaceholder.style.setProperty('height', `60vh`);
+            imgPlaceholder.style.setProperty('border', `none`);
             
             specieDetails.textContent = result?.content; 
             specieTitle.textContent = result?.title.toUpperCase(); 
             specieTitle.style.setProperty('font-size', '3vw')
-            // const iframeDoc = imgDetailsFrame.contentDocument || imgDetailsFrame.contentWindow.document;
-            // const iframeHTML = iframeDoc.documentElement.innerHTML;
-            // const iframeBody = iframeDoc//.querySelector('pre')
-            // console.log(imgDetailsFrame)
+            
         }
     } else {
         console.log('No state found in sessionStorage.');
