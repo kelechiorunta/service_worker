@@ -4,8 +4,54 @@ document.addEventListener('DOMContentLoaded', () => {
     const contactProgressBar = contactScrollContainer.querySelector('.contact-progress-bar');
     const dragText = document.querySelector('.dragText');
     const dropText = document.querySelectorAll('.dropText');
+    const geoLocationBtn =  document.querySelector('.geolocationBtn');
+    const geoLocationResult = document.querySelector('.geolocation_pos');
+
+
     let dragged;
+    console.log(navigation)
     console.log(dragText, dropText)
+
+
+    /**
+     * Check geolocation position with the geoLocation API
+     * 
+     */
+
+    const success = (position) => {
+        const latitude = position.coords.latitude;
+        const longitude = position.coords.longitude;
+        geoLocationResult.textContent = `Latitude: ${latitude}, Longitude: ${longitude}`
+    }
+
+    const error = (error) => {
+        console.log("Failed to get location", error)
+    }
+
+    const options = {
+        enableHighAccuracy: true,
+        maximumAge: 30000,
+        timeout: 27000,
+    }
+
+    const getLocation = async() => {
+        if ('geolocation' in navigator) {
+            console.log("Geolocation is supported");
+    
+            navigator.geolocation.getCurrentPosition(success, error)
+
+            const watchID = navigator.geolocation.watchPosition(success, error);
+            console.log(watchID)
+            return watchID;
+
+            
+        }else{
+            console.log("Geolocation API not supported")
+        }
+    }
+
+    geoLocationBtn.addEventListener('click', getLocation)
+
      /**Scroll handler for the scroll indicator */
     const scrollContactProgress = () => {
     
