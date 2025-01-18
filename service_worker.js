@@ -88,19 +88,10 @@ const enableNavigationPreload = async () => {
 };
 
 self.addEventListener('activate', (event) => {
-    
-    // event.postMessage({ action: 'showSpinner' });
-
     event.waitUntil(
         (async () => {
             // Enable navigation preload
             await enableNavigationPreload();
-
-            // const clients = await self.clients.matchAll();
-            // clients.forEach((client) => {
-            //     client.postMessage({ action: 'showSpinner' });
-            // });
-
             // Clean up old caches
             const cacheNames = await caches.keys();
             await Promise.all(
@@ -140,25 +131,31 @@ self.addEventListener('fetch', (event) => {
     }
 });
 
-// import {registerRoute} from 'workbox-routing';
-// import {CacheFirst} from 'workbox-strategies';
-// import {ExpirationPlugin} from 'workbox-expiration';
+// FORMER CODE
+self.addEventListener('sync', (event) => {
+    if (event.tag === 'sendMessages'){
+        event.waitUntil(sendMessages())
+    }
+})
 
-// registerRoute(
-//   ({request}) => request.destination === 'image',
-//   // Use a cache-first strategy with the following config:
-//   new CacheFirst({
-//     // You need to provide a cache name when using expiration.
-//     cacheName: 'images',
-//     plugins: [
-//       new ExpirationPlugin({
-//         // Keep at most 50 entries.
-//         maxEntries: 50,
-//         // Don't keep any entries for more than 30 days.
-//         maxAgeSeconds: 30 * 24 * 60 * 60,
-//         // Automatically cleanup if quota is exceeded.
-//         purgeOnQuotaError: true
-//       })
-//     ]
-//   })
-// );
+const sendMessages = async() => {
+    try {
+        // Retrieve messages from IndexedDB or local storage
+        const message = JSON.parse(window.localStorage.getItem('messages'))//await getOutboxMessages(); // Assume this is implemented
+    
+        // Send messages to the server
+        
+          await fetch("/subscribe", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(message),
+          });
+    
+          // Optionally remove the message from the outbox after successful send
+          window.localStorage.removeItem('messages');//await removeMessageFromOutbox(message.id); // Assume this is implemented
+          console.log("All messages sent successfully.");
+        }
+       catch (err) {
+        console.error("Failed to send messages:", err);
+      }
+}

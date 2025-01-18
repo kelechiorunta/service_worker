@@ -62,16 +62,16 @@ server.post('/subscribe', async (req, res) => {
         from: process.env.EMAIL_USER,
         to: email,
         subject: 'Welcome to our AppWorld Subscription Program',
-        html: `<p>Thank you, dear ${name} for signing up for our nature program. We hope to keep you
-                  updated with our latest herb species</p>
+        html:    `<p>Thank you, dear ${name} for signing up for our nature program. We hope to keep you
+                  updated with our latest herb species.</p>
                
-               <p>If you did not request this, please ignore this email.</p>`,
+                  <p>If you did not request this, please ignore this email.</p>`,
       };
 
     try{
         // Send the email
         await transporter.sendMail(mailOptions);
-        res.status(200).send({ success: true, message: "Email sent successfully." });
+        res.status(200).send({ success: true, message: "Thanks for subscribing. A confirmation email sent successfully." });
     } catch (err) {
         console.error("Error sending email:", err);
         res.status(500).send({ success: false, error: "Failed to send email." });

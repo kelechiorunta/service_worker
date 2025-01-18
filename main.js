@@ -295,6 +295,8 @@ document.addEventListener('DOMContentLoaded', () => {
      */
     const subscriptionBtn = document.querySelector('input[type=submit]');
     const form = document.querySelector('form');
+
+// FORMER CODE
     subscriptionBtn.addEventListener('click', (event) => {
         event.preventDefault();
         try{
@@ -304,6 +306,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (!name || !email) {
                 alert("Please fill all details")
             }else{
+                localStorage.setItem('messages', {name, email})
                 subscribe(name, email)
             }      
         }
@@ -316,6 +319,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }     
     })
     
+    //Subscribe event handler
     const subscribe = (name, email) => {
         // createLoader(true);
         try{ 
@@ -327,37 +331,44 @@ document.addEventListener('DOMContentLoaded', () => {
                 body:JSON.stringify({name, email})
             })
             .then(res => res.json())
-            .then(res => {console.log(res?.message)}) 
-            createToaster("Thank you for subscribing");
+            .then(res => {console.log(res?.message);  createToaster(res?.message);}) 
+           
         }
         catch(err){
             console.error(err)
-        }
-        finally{
-            
-            // createLoader(false)
-            // loaderId = setTimeout(()=>{createLoader(false); clearTimeout(loaderId)}, 3000)
-            // name = "";
-            // email = "";
-            // loader.remove();
+            createToaster(err.error)
         }
     }
 //////////////////////////////////////////////////
 
+///Service worker Sync Background Task API
+
+    if ("serviceWorker" in navigator && 'SyncManager' in window) {
+       navigator.serviceWorker.register('./service_worker.js', {scope: './'}).then(async(syncReg) => {
+            console.log("Service worker synchronization API created")
+            try{
+                await syncReg.sync.register('sendMessages');
+                console.log("Synchronization created");
+            }
+            catch(err){
+                console.error("Failed to create synchronization", err)
+            }
+        })
+    }
 /**
  * TOASTER FUNCTION
  */
 
 const createToaster = (text) => {
     // Get the snackbar DIV
-    var x = document.getElementById("snackbar");
+    var toaster = document.getElementById("snackbar");
   
     // Add the "show" class to DIV
-    x.className = "show";
-    x.textContent = text;
+    toaster.className = "show";
+    toaster.textContent = text;
   
     // After 3 seconds, remove the show class from DIV
-    setTimeout(function(){ x.className = x.className.replace("show", ""); }, 3000);
+    setTimeout(function(){ toaster.className = toaster.className.replace("show", ""); }, 3000);
   }
 
   ////////////////////////////////////////////////
