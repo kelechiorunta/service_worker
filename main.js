@@ -1,6 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
 
   const scrollheader = document.querySelector('.mainHeader');
+  const navItem = scrollheader.querySelector(' .primary_nav li a');
   const scrollContainer = scrollheader.querySelector('.progress-container');
   const progressBar = scrollContainer.querySelector('.progress-bar');
   const imgSection = document.querySelector('.img_section');
@@ -24,38 +25,45 @@ document.addEventListener('DOMContentLoaded', () => {
    * Create loader and append to a container at initial loading time with service Worker
    */
 
-const createLoader = (activate) => {
-    const loader_container = document.createElement('div');
-    loader_container.setAttribute('class', 'loader_container');
-    loader_container.style.setProperty('position', 'fixed');
-    loader_container.style.setProperty('width', '100%');
-    loader_container.style.setProperty('inset', '0');
-    loader_container.style.setProperty('background-color','rgba(0,0,0,0.9)');
-    loader_container.style.setProperty('margin', 'auto');
-    loader_container.style.setProperty('display', 'flex');
-    loader_container.style.setProperty('justify-content', 'center');
-    loader_container.style.setProperty('align-items', 'center');
-
-    const loader = document.createElement('div');
-    loader.setAttribute('class', 'loader');
-    loader.style.setProperty('border', '16px solid white');
-    loader.style.setProperty('width', '120px');
-    loader.style.setProperty('height', '120px');
-    loader.style.setProperty('border-radius', '50%');
-    loader.style.setProperty('border-top', '16px solid #545c00');
-    loader.style.setProperty('border-bottom', '16px solid #ee7d39');
-    loader.style.setProperty('animation', 'spin 2s linear infinite');
-
-    loader_container.append(loader);
+  const createLoader = (activate) => {
+    // Check if loader container already exists
+    let loader_container = document.querySelector('.loader_container');
 
     if (activate) {
-        document.body.append(loader_container);
-    } else {
-        loader_container.remove();
-    }
-   
+        // If activating, create loader only if it doesn't exist
+        if (!loader_container) {
+            loader_container = document.createElement('div');
+            loader_container.setAttribute('class', 'loader_container');
+            loader_container.style.setProperty('position', 'fixed');
+            loader_container.style.setProperty('width', '100%');
+            loader_container.style.setProperty('inset', '0');
+            loader_container.style.setProperty('background-color', 'rgba(0,0,0,0.9)');
+            loader_container.style.setProperty('margin', 'auto');
+            loader_container.style.setProperty('display', 'flex');
+            loader_container.style.setProperty('justify-content', 'center');
+            loader_container.style.setProperty('align-items', 'center');
 
-  }
+            const loader = document.createElement('div');
+            loader.setAttribute('class', 'loader');
+            loader.style.setProperty('border', '16px solid white');
+            loader.style.setProperty('width', '120px');
+            loader.style.setProperty('height', '120px');
+            loader.style.setProperty('border-radius', '50%');
+            loader.style.setProperty('border-top', '16px solid #545c00');
+            loader.style.setProperty('border-bottom', '16px solid #ee7d39');
+            loader.style.setProperty('animation', 'spin 2s linear infinite');
+
+            loader_container.append(loader);
+            document.body.append(loader_container);
+        }
+    } else {
+        // If deactivating, remove loader container if it exists
+        if (loader_container) {
+            loader_container.remove();
+        }
+    }
+};
+
     /**Install the service worker agent */
     // createLoader(true);
     const registerServiceWorker = async(scriptUrl) => {
@@ -217,6 +225,34 @@ const createLoader = (activate) => {
 
     let yPos = 0
 
+    const headerIntersection = (entries, observer) => {
+        
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                document.addEventListener('scroll', (event) => {
+                    var winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+                    var height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+                    let navItems =  entry.target.querySelectorAll('.primary_nav li a')
+                    
+                     if (winScroll >= `300`) {
+                        console.log(navItems)
+                        entry.target.style.setProperty('background-color', 'white')
+                        navItems.forEach(item => {
+                            item.style.setProperty('color', 'rgba(0,0,0,0.9)')
+                        })
+                        
+                     }else{
+                        console.log(navItems)
+                        entry.target.style.setProperty('background-color', 'rgba(0,0,0,0.7)')
+                        navItems.forEach(item => {
+                            item.style.setProperty('color', 'white')
+                        })
+                    }
+                })
+            }
+        })
+    }
+
     const pageIntersection = (entries, observer) => {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
@@ -227,6 +263,10 @@ const createLoader = (activate) => {
     }
 
     const pageObserver = new IntersectionObserver(pageIntersection, intersectingOptions);
+
+    const headerObserver = new IntersectionObserver(headerIntersection, intersectingOptions);
+
+    headerObserver.observe(scrollheader);
 
     // (document.body.children).forEach(child => {
         const child = document.querySelectorAll('.frame img')[0];
@@ -247,6 +287,80 @@ const createLoader = (activate) => {
     document.addEventListener('scroll', scrollProgress);
 
     registerServiceWorker('./service_worker.js');
+
+
+    /**
+     * Form subscription handling
+     * 
+     */
+    const subscriptionBtn = document.querySelector('input[type=submit]');
+    const form = document.querySelector('form');
+    subscriptionBtn.addEventListener('click', (event) => {
+        event.preventDefault();
+        try{
+            const name = form.elements['name'].value; // Get the value of the 'name' input
+            const email = form.elements['mail'].value; // Get the value of the 'mail' input
+            console.log(name, email)
+            if (!name || !email) {
+                alert("Please fill all details")
+            }else{
+                subscribe(name, email)
+            }      
+        }
+        catch(err){
+            console.error(err, "Unable to subscribe")
+        }
+        finally{
+            form.elements['name'].value = "";
+            form.elements['mail'].value = "";
+        }     
+    })
+    
+    const subscribe = (name, email) => {
+        // createLoader(true);
+        try{ 
+            fetch('/subscribe', {
+                method:'POST',
+                headers: {
+                    'Content-Type': 'application/json', // Correct format for headers
+                },
+                body:JSON.stringify({name, email})
+            })
+            .then(res => res.json())
+            .then(res => {console.log(res?.message)}) 
+            createToaster("Thank you for subscribing");
+        }
+        catch(err){
+            console.error(err)
+        }
+        finally{
+            
+            // createLoader(false)
+            // loaderId = setTimeout(()=>{createLoader(false); clearTimeout(loaderId)}, 3000)
+            // name = "";
+            // email = "";
+            // loader.remove();
+        }
+    }
+//////////////////////////////////////////////////
+
+/**
+ * TOASTER FUNCTION
+ */
+
+const createToaster = (text) => {
+    // Get the snackbar DIV
+    var x = document.getElementById("snackbar");
+  
+    // Add the "show" class to DIV
+    x.className = "show";
+    x.textContent = text;
+  
+    // After 3 seconds, remove the show class from DIV
+    setTimeout(function(){ x.className = x.className.replace("show", ""); }, 3000);
+  }
+
+  ////////////////////////////////////////////////
 })
     let myslides;
     let slideContainer = document.querySelector('.slide_container');

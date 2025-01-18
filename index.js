@@ -4,6 +4,7 @@ import express from 'express';
 import sharp from 'sharp';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import nodemailer from 'nodemailer';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -13,13 +14,16 @@ const PORT = 7510;
 const server = express();
 
 // server.use(express.static(path.resolve(__dirname, 'imgs')))
-server.use(express.static(path.resolve(__dirname)))
+server.use(express.static(path.resolve(__dirname)));
+server.use(express.json());
 
 
 const indexFile = path.resolve(__dirname, 'index.html');
 const aboutFile = path.resolve(__dirname, 'about.html');
 const contactFile = path.resolve(__dirname, 'contact.html');
 const imageFile = path.resolve(__dirname, 'images.html');
+
+console.log(process.env.EMAIL_PASS, process.env.EMAIL_USER)
 
 server.get('/', (req, res) => {
     res.sendFile(indexFile)
@@ -35,6 +39,43 @@ server.get('/contact', (req, res) => {
 
 server.get('/images', (req, res) => {
     res.sendFile(imageFile)
+})
+
+server.post('/subscribe', async (req, res) => {
+    const { name, email } = req.body;
+    console.log(name, email)
+
+    if (!name || !email) {
+        return res.status(400).json({error: "Invalid or missing entries"})
+    }
+
+    const transporter = nodemailer.createTransport({
+        service: "gmail",
+        auth: {
+            user: process.env.EMAIL_USER,
+            pass: process.env.EMAIL_PASS,
+        },
+    });
+
+    //Create the email
+    const mailOptions = {
+        from: process.env.EMAIL_USER,
+        to: email,
+        subject: 'Welcome to our AppWorld Subscription Program',
+        html: `<p>Thank you, dear ${name} for signing up for our nature program. We hope to keep you
+                  updated with our latest herb species</p>
+               
+               <p>If you did not request this, please ignore this email.</p>`,
+      };
+
+    try{
+        // Send the email
+        await transporter.sendMail(mailOptions);
+        res.status(200).send({ success: true, message: "Email sent successfully." });
+    } catch (err) {
+        console.error("Error sending email:", err);
+        res.status(500).send({ success: false, error: "Failed to send email." });
+    }
 })
 
 server.get('/placeholderImg', async(req, res) => {

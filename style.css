@@ -119,7 +119,7 @@ h1 {
   color: white;
 }
 
-h2 {
+.sub-title {
   padding: 2rem;
   top: 40%;
   left: 5%;
@@ -172,7 +172,7 @@ h2 {
   justify-content: space-evenly;
   flex-wrap: wrap;
   gap: 4rem;
-  margin: auto;
+  margin: 4rem auto;
   min-width: 300px;
   width: 90%;
   box-shadow: 4px 4px 12px rgba(0, 0, 0, 0.9);
@@ -355,6 +355,14 @@ h2 {
   background-color: purple;
 }
 
+.main-nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  padding: 0.2rem 1rem;
+}
+
 .mainHeader, .aboutHeader, .contactHeader, .imagesHeader {
   display: flex;
   flex-direction: column;
@@ -362,15 +370,16 @@ h2 {
   left: 0;
   top: 10;
   background-color: white;
-  color: black;
   z-index: 20;
   width: 100%;
   padding: auto 0.5rem;
   box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.5);
+  transition: background-color 1s ease-in-out;
 }
 .mainHeader .primary_nav, .aboutHeader .primary_nav, .contactHeader .primary_nav, .imagesHeader .primary_nav {
   display: flex;
   justify-content: space-evenly;
+  align-items: center;
   width: 100%;
   padding: 1rem;
   list-style-type: none;
@@ -378,6 +387,15 @@ h2 {
 }
 .mainHeader .primary_nav li a, .aboutHeader .primary_nav li a, .contactHeader .primary_nav li a, .imagesHeader .primary_nav li a {
   text-decoration: none;
+}
+
+.mainHeader {
+  background-color: rgba(0, 0, 0, 0.8);
+  color: white;
+  transition: background-color 1s ease-in-out;
+}
+.mainHeader .primary_nav li a {
+  color: white;
 }
 
 .parallax {
@@ -394,6 +412,28 @@ h2 {
   background-size: cover;
 }
 .parallax::before {
+  content: "";
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 10;
+}
+
+.nature-parallax {
+  /* The image used */
+  background-image: url("./imgs/nature-flower.jpg");
+  width: 100%;
+  /* Full height */
+  height: 50vh;
+  position: relative;
+  /* Create the parallax scrolling effect */
+  background-attachment: fixed;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+.nature-parallax::before {
   content: "";
   position: absolute;
   width: 100%;
@@ -540,4 +580,129 @@ h2 {
 
 .specie-details {
   font-size: 1.5vw;
+}
+
+.species-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  width: 100%;
+  padding: 1rem;
+  box-shadow: 4px 4px 4px rgba(0, 0, 0, 0.9);
+}
+.species-section .species-type {
+  background-color: green;
+  color: black;
+  margin: auto;
+  width: -moz-max-content;
+  width: max-content;
+}
+
+/* Style the form element with a border around it */
+form {
+  border: 4px solid #f1f1f1;
+}
+
+/* Add some padding and a grey background color to containers */
+.container {
+  padding: 20px;
+  background-color: #f1f1f1;
+}
+
+/* Style the input elements and the submit button */
+input[type=text], input[type=submit] {
+  width: 100%;
+  padding: 12px;
+  margin: 8px 0;
+  display: inline-block;
+  border: 1px solid #ccc;
+  box-sizing: border-box;
+}
+
+/* Add margins to the checkbox */
+input[type=checkbox] {
+  margin-top: 16px;
+}
+
+/* Style the submit button */
+input[type=submit] {
+  background-color: #04AA6D;
+  color: white;
+  border: none;
+}
+
+input[type=submit]:hover {
+  opacity: 0.8;
+}
+
+.section-cta {
+  display: flex;
+  padding: 2rem;
+  align-items: center;
+  justify-content: space-evenly;
+  width: 90%;
+  margin: auto;
+  gap: 1rem;
+}
+.section-cta figcaption {
+  width: 50%;
+  height: 400px;
+}
+.section-cta figcaption img {
+  width: 100%;
+}
+.section-cta form {
+  width: 50%;
+  height: auto;
+}
+
+/*
+TOASTER IMPLEMENTATION
+*/
+/* The snackbar - position it at the bottom and in the middle of the screen */
+#snackbar {
+  visibility: hidden; /* Hidden by default. Visible on click */
+  min-width: 250px; /* Set a default minimum width */
+  margin-left: -125px; /* Divide value of min-width by 2 */
+  background-color: #333; /* Black background color */
+  color: #fff; /* White text color */
+  text-align: center; /* Centered text */
+  border-radius: 2px; /* Rounded borders */
+  padding: 16px; /* Padding */
+  position: fixed; /* Sit on top of the screen */
+  z-index: 1; /* Add a z-index if needed */
+  left: 50%; /* Center the snackbar */
+  bottom: 30px; /* 30px from the bottom */
+}
+
+/* Show the snackbar when clicking on a button (class added with JavaScript) */
+#snackbar.show {
+  visibility: visible; /* Show the snackbar */
+  /* Add animation: Take 0.5 seconds to fade in and out the snackbar.
+  However, delay the fade out process for 2.5 seconds */
+  animation: fadein 0.5s, fadeout 0.5s 2.5s;
+}
+
+/* Animations to fade the snackbar in and out */
+@keyframes fadein {
+  from {
+    bottom: 0;
+    opacity: 0;
+  }
+  to {
+    bottom: 30px;
+    opacity: 1;
+  }
+}
+@keyframes fadeout {
+  from {
+    bottom: 30px;
+    opacity: 1;
+  }
+  to {
+    bottom: 0;
+    opacity: 0;
+  }
 }/*# sourceMappingURL=style.css.map */

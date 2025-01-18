@@ -13,11 +13,14 @@
 <body>
    
     <header class="mainHeader">
-        <ul class="primary_nav">
-            <li><a href="/">Home</a></li>
-            <li><a href="/about">About</a></li>
-            <li><a href="/contact">Contact</a></li>
-        </ul>
+        <nav class="main-nav">
+            <a href="#"><img src="./imgs/appworld.jpeg" width="50" height="50" alt="" /></a>
+            <ul class="primary_nav"> 
+                <li><a href="/">Home</a></li>
+                <li><a href="/about">About</a></li>
+                <li><a href="/contact">Contact</a></li>
+            </ul>
+        </nav>
         <div class="progress-container">
             <div class="progress-bar"></div>
         </div>
@@ -34,35 +37,70 @@
         It is wonderful. Thank you. This is great. 
         Like and subscribe. Peace. Very Cool and Soft and lovely. Joyous.</h2> -->
     
-    <fieldset class="img_section">
-        <div class="img_container">
-            <div class="placeholder" style="background-image: url(/smallImg/1); background-size: cover; background-position: center;">
-                <img src="imgs/next1.jpg" style="object-fit: cover; object-position: center;" alt="streamImg" width="500" height="500"/>
+    <section class="species-section">
+        <!-- <h1 class="species-type">SPECIES</h1> -->
+        <fieldset class="img_section">
+            <div class="img_container">
+                <div class="placeholder" style="background-image: url(/smallImg/1); background-size: cover; background-position: center;">
+                    <img src="imgs/next1.jpg" style="object-fit: cover; object-position: center;" alt="streamImg" width="500" height="500"/>
+                </div>
+                <button>View Documentation</button>
             </div>
-            <button>View Documentation</button>
-        </div>
+            
+            <div class="img_container">
+                <div class="placeholder" style="background-image: url(/smallImg/2); background-size: cover; background-position: center;">
+                    <img src="imgs/next2.jpg" style="object-fit: cover; object-position: center;" alt="streamImg" width="500" height="500"/>
+                </div>
+                <button>View Documentation</button>
+            </div>
+            
+            <div class="img_container">
+                <div class="placeholder" style="background-image: url(/smallImg/3); background-size: cover; background-position: center;">
+                    <img src="imgs/next3.jpg" style="object-fit: cover; object-position: center;" alt="streamImg" width="500" height="500"/>
+                </div>
+                <button>View Documentation</button>
+            </div>
         
-        <div class="img_container">
-            <div class="placeholder" style="background-image: url(/smallImg/2); background-size: cover; background-position: center;">
-                <img src="imgs/next2.jpg" style="object-fit: cover; object-position: center;" alt="streamImg" width="500" height="500"/>
-            </div>
-            <button>View Documentation</button>
-        </div>
-        
-        <div class="img_container">
-            <div class="placeholder" style="background-image: url(/smallImg/3); background-size: cover; background-position: center;">
-                <img src="imgs/next3.jpg" style="object-fit: cover; object-position: center;" alt="streamImg" width="500" height="500"/>
-            </div>
-            <button>View Documentation</button>
-        </div>
-       
-    </fieldset>    
-
+        </fieldset>    
+    </section>
+    
+    <div class="nature-parallax"></div>
     <!-- <iframe src="/about.html"></iframe> -->
     
+    <section class="section-cta">
+
+        <!-- Subscription Form -->
+
+        <figcaption>
+            <img src="./imgs/Reflections.jpg" alt="reflections" width="400" height="400" />
+        </figcaption>
+
+        <form action="#">
+            <div class="container">
+              <h2>Subscribe to our Newsletter</h2>
+              <p>Get the latest updates on our program</p>
+            </div>
+          
+            <div class="container" style="background-color:white">
+              <input type="text" placeholder="Name" name="name" class="name" required>
+              <input type="text" placeholder="Email address" name="mail" class="email" required>
+              <label>
+                <input type="checkbox" checked="checked" name="subscribe"> Daily Newsletter
+              </label>
+            </div>
+          
+            <div class="container">
+              <input type="submit" value="Subscribe">
+            </div>
+          </form>
+
+    </section>
     <input type="text" class="value" placeholder="Enter Text" />
     <button class="unregister">Unregister</button>
     <ul class="list"></ul>
+
+    <!-- The actual snackbar -->
+    <div id="snackbar">Some text some message..</div>
     
 </body>
 </html>
