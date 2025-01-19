@@ -1,5 +1,7 @@
-document.addEventListener('DOMContentLoaded', () => {
+import { addMessage } from "./indexedDB.js";
 
+document.addEventListener('DOMContentLoaded', () => {
+    
   const scrollheader = document.querySelector('.mainHeader');
   const navItem = scrollheader.querySelector(' .primary_nav li a');
   const scrollContainer = scrollheader.querySelector('.progress-container');
@@ -296,8 +298,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const subscriptionBtn = document.querySelector('input[type=submit]');
     const form = document.querySelector('form');
 
-// FORMER CODE
-    subscriptionBtn.addEventListener('click', (event) => {
+    subscriptionBtn.addEventListener('click', async(event) => {
         event.preventDefault();
         try{
             const name = form.elements['name'].value; // Get the value of the 'name' input
@@ -306,10 +307,11 @@ document.addEventListener('DOMContentLoaded', () => {
             if (!name || !email) {
                 alert("Please fill all details")
             }else{
-                localStorage.setItem('messages', {name, email})
-                subscribe(name, email)
-            }      
-        }
+                createToaster("Confirmation email sent");
+                await registerSync('./service_worker.js');
+                await addMessage(name, email);
+                    }      
+                }
         catch(err){
             console.error(err, "Unable to subscribe")
         }
@@ -318,43 +320,81 @@ document.addEventListener('DOMContentLoaded', () => {
             form.elements['mail'].value = "";
         }     
     })
+
+    if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.addEventListener('message', (event) => {
+          if (event.data.type === 'syncSuccess') {
+            console.log(event.data.message); // "All messages sent successfully!"
+            createToaster(event.data.message)
+          }
+        });
+      }
+
     
-    //Subscribe event handler
-    const subscribe = (name, email) => {
-        // createLoader(true);
-        try{ 
-            fetch('/subscribe', {
-                method:'POST',
-                headers: {
-                    'Content-Type': 'application/json', // Correct format for headers
-                },
-                body:JSON.stringify({name, email})
-            })
-            .then(res => res.json())
-            .then(res => {console.log(res?.message);  createToaster(res?.message);}) 
+// // FORMER CODE
+//     subscriptionBtn.addEventListener('click', (event) => {
+//         event.preventDefault();
+//         try{
+//             const name = form.elements['name'].value; // Get the value of the 'name' input
+//             const email = form.elements['mail'].value; // Get the value of the 'mail' input
+//             console.log(name, email)
+//             if (!name || !email) {
+//                 alert("Please fill all details")
+//             }else{
+//                 localStorage.setItem('messages', {name, email})
+//                 subscribe(name, email)
+//             }      
+//         }
+//         catch(err){
+//             console.error(err, "Unable to subscribe")
+//         }
+//         finally{
+//             form.elements['name'].value = "";
+//             form.elements['mail'].value = "";
+//         }     
+//     })
+    
+//     //Subscribe event handler
+//     const subscribe = (name, email) => {
+//         // createLoader(true);
+//         try{ 
+//             fetch('/subscribe', {
+//                 method:'POST',
+//                 headers: {
+//                     'Content-Type': 'application/json', // Correct format for headers
+//                 },
+//                 body:JSON.stringify({name, email})
+//             })
+//             .then(res => res.json())
+//             .then(res => {console.log(res?.message);  createToaster(res?.message);}) 
            
-        }
-        catch(err){
-            console.error(err)
-            createToaster(err.error)
-        }
-    }
+//         }
+//         catch(err){
+//             console.error(err)
+//             createToaster(err.error)
+//         }
+//     }
 //////////////////////////////////////////////////
 
 ///Service worker Sync Background Task API
-
+const registerSync = (url) => {
     if ("serviceWorker" in navigator && 'SyncManager' in window) {
-       navigator.serviceWorker.register('./service_worker.js', {scope: './'}).then(async(syncReg) => {
-            console.log("Service worker synchronization API created")
-            try{
-                await syncReg.sync.register('sendMessages');
-                console.log("Synchronization created");
-            }
-            catch(err){
-                console.error("Failed to create synchronization", err)
-            }
-        })
-    }
+        navigator.serviceWorker.register(url, {scope: './'}).then(async(syncReg) => {
+             console.log("Service worker synchronization API created")
+             try{
+                 await syncReg.sync.register('sendMessages');
+                 console.log("Synchronization created");
+                //  navigator.serviceWorker.addEventListener('message', (event) => {
+                //     createToaster(event.data)
+                //  })
+             }
+             catch(err){
+                 console.error("Failed to create synchronization", err)
+             }
+         })
+     }
+}
+   
 /**
  * TOASTER FUNCTION
  */

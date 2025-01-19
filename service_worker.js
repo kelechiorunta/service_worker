@@ -131,31 +131,111 @@ self.addEventListener('fetch', (event) => {
     }
 });
 
-// FORMER CODE
-self.addEventListener('sync', (event) => {
-    if (event.tag === 'sendMessages'){
-        event.waitUntil(sendMessages())
-    }
-})
+    // const openDB = window.indexedDB.openDB; // Use this if using a CDN
 
-const sendMessages = async() => {
-    try {
-        // Retrieve messages from IndexedDB or local storage
-        const message = JSON.parse(window.localStorage.getItem('messages'))//await getOutboxMessages(); // Assume this is implemented
-    
-        // Send messages to the server
-        
-          await fetch("/subscribe", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(message),
-          });
-    
-          // Optionally remove the message from the outbox after successful send
-          window.localStorage.removeItem('messages');//await removeMessageFromOutbox(message.id); // Assume this is implemented
-          console.log("All messages sent successfully.");
+    self.addEventListener('sync', (event) => {
+        if (event.tag === 'sendMessages') {
+          event.waitUntil(sendMessages());
         }
-       catch (err) {
-        console.error("Failed to send messages:", err);
-      }
-}
+      });
+      
+
+      const sendMessages = async () => {
+        return new Promise((resolve, reject) => {
+          const request = indexedDB.open('messagesDB', 1);
+      
+          request.onsuccess = async (event) => {
+            const db = event.target.result;
+            const transaction = db.transaction('outbox', 'readonly');
+            const store = transaction.objectStore('outbox');
+      
+            const getAllRequest = store.getAll();
+      
+            getAllRequest.onsuccess = async () => {
+              const messages = getAllRequest.result;
+      
+              try {
+                for (const message of messages) {
+                  // Send each message to the server
+                  await fetch('/subscribe', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(message),
+                  });
+      
+                  // Create a new transaction for deleting the message to keep the request active/pending
+                  const deleteTransaction = db.transaction('outbox', 'readwrite');
+                  const deleteStore = deleteTransaction.objectStore('outbox');
+                  deleteStore.delete(message.id);
+      
+                  // Ensure transaction completes successfully
+                  await new Promise((res, rej) => {
+
+                    deleteTransaction.oncomplete = (res) => {
+                        console.log("Message sent to email successfully")
+                    };
+                    deleteTransaction.onerror = rej;
+                  });
+                }
+      
+                // Notify the main thread of success
+                self.clients.matchAll().then((clients) => {
+                  if (clients && clients.length) {
+                    clients.forEach((client) => {
+                      client.postMessage({ type: 'syncSuccess', message: 'All messages sent successfully!' });
+                    });
+                  }
+                });
+      
+                resolve();
+              } catch (error) {
+                console.error('Failed to send messages:', error);
+                reject(error);
+              }
+            };
+      
+            getAllRequest.onerror = (event) => {
+              console.error('Failed to retrieve messages:', event.target.error);
+              reject(event.target.error);
+            };
+          };
+      
+          request.onerror = (event) => {
+            console.error('Failed to open database:', event.target.error);
+            reject(event.target.error);
+          };
+        });
+      };
+      
+      
+      
+
+
+// FORMER CODE
+// self.addEventListener('sync', (event) => {
+//     if (event.tag === 'sendMessages'){
+//         event.waitUntil(sendMessages())
+//     }
+// })
+
+// const sendMessages = async() => {
+//     try {
+//         // Retrieve messages from IndexedDB or local storage
+//         const message = JSON.parse(window.localStorage.getItem('messages'))//await getOutboxMessages(); // Assume this is implemented
+    
+//         // Send messages to the server
+        
+//           await fetch("/subscribe", {
+//             method: "POST",
+//             headers: { "Content-Type": "application/json" },
+//             body: JSON.stringify(message),
+//           });
+    
+//           // Optionally remove the message from the outbox after successful send
+//           window.localStorage.removeItem('messages');//await removeMessageFromOutbox(message.id); // Assume this is implemented
+//           console.log("All messages sent successfully.");
+//         }
+//        catch (err) {
+//         console.error("Failed to send messages:", err);
+//       }
+// }
