@@ -172,21 +172,20 @@ self.addEventListener('fetch', (event) => {
                   await new Promise((res, rej) => {
 
                     deleteTransaction.oncomplete = (res) => {
+                        // Notify the main thread of success
+                    self.clients.matchAll().then((clients) => {
+                        if (clients && clients.length) {
+                        clients.forEach((client) => {
+                            client.postMessage({ type: 'syncSuccess', message: 'All messages sent successfully!' });
+                        });
+                        }
+                    });
                         console.log("Message sent to email successfully")
                     };
                     deleteTransaction.onerror = rej;
                   });
                 }
-      
-                // Notify the main thread of success
-                self.clients.matchAll().then((clients) => {
-                  if (clients && clients.length) {
-                    clients.forEach((client) => {
-                      client.postMessage({ type: 'syncSuccess', message: 'All messages sent successfully!' });
-                    });
-                  }
-                });
-      
+    
                 resolve();
               } catch (error) {
                 console.error('Failed to send messages:', error);
