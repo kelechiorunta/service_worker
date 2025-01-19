@@ -80,10 +80,14 @@ document.addEventListener('DOMContentLoaded', () => {
                     console.log("Service worker installed")
                 }else if (registeration && registeration.active) {
                     console.log("Service worker is active") 
+                    
                     loader_container.remove(); 
                 }else if (registeration && registeration.waiting) {
                     console.log("Service worker awaits your orders")
                      loader_container.remove(); 
+                }
+                else{
+                    
                 }
             }
             catch(err){
@@ -307,7 +311,9 @@ document.addEventListener('DOMContentLoaded', () => {
             if (!name || !email) {
                 alert("Please fill all details")
             }else{
-                createToaster("Confirmation email sent");
+                if (createToaster) {
+                    createToaster("Confirmation email sent");
+                }
                 await registerSync('./service_worker.js');
                 await addMessage(name, email);
                     }      
@@ -321,14 +327,33 @@ document.addEventListener('DOMContentLoaded', () => {
         }     
     })
 
-    if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.addEventListener('message', (event) => {
-          if (event.data.type === 'syncSuccess') {
-            console.log(event.data.message); // "All messages sent successfully!"
-            createToaster(event.data.message)
-          }
-        });
-      }
+    
+    /**
+     * A Background Sync handler that listens for the message event of the service Worker to report the message posted from the oncomplete event handler of the final transaction of the objectStore of the indexeddb message store from the sendMessage handler in the service worker file.
+     */
+    const syncMessage = () => {
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('./service_worker.js', { scope: './' })
+                .then(() => {
+                    console.log('ServiceWorker registered successfully.');
+     
+                    navigator.serviceWorker.addEventListener('message', (event) => {
+                        if (event.data.type === 'syncSuccess') {
+                            console.log(event.data.message); // "All messages sent successfully!"
+                                createToaster(event.data.message);
+                                // createLoader(true)
+                        }
+                    });
+                })
+                .catch((err) => {
+                    console.error('ServiceWorker registration failed:', err);
+                });
+        }
+    }
+    
+    syncMessage();
+
+     
 
     
 // // FORMER CODE
@@ -384,9 +409,6 @@ const registerSync = (url) => {
              try{
                  await syncReg.sync.register('sendMessages');
                  console.log("Synchronization created");
-                //  navigator.serviceWorker.addEventListener('message', (event) => {
-                //     createToaster(event.data)
-                //  })
              }
              catch(err){
                  console.error("Failed to create synchronization", err)
@@ -404,11 +426,11 @@ const createToaster = (text) => {
     var toaster = document.getElementById("snackbar");
   
     // Add the "show" class to DIV
-    toaster.className = "show";
+    toaster.classList.add("show");
     toaster.textContent = text;
   
     // After 3 seconds, remove the show class from DIV
-    setTimeout(function(){ toaster.className = toaster.className.replace("show", ""); }, 3000);
+    setTimeout(function(){ toaster.classList.remove("show"); }, 3000);
   }
 
   ////////////////////////////////////////////////
