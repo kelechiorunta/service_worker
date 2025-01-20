@@ -311,21 +311,67 @@ document.addEventListener('DOMContentLoaded', () => {
             if (!name || !email) {
                 alert("Please fill all details")
             }else{
-                if (createToaster) {
-                    createToaster("Confirmation email sent");
+               /**
+                * The navigator.onLine property indicates whether the browser is currently online (true) or offline (false).
+                */
+                if ('connection' in navigator) {
+                    const connection = navigator.connection;
+                    console.log('Effective network type:', connection.effectiveType); // e.g., '4g', '3g', etc.
+                    console.log('Downlink speed:', connection.downlink, 'Mbps');
+                    console.log('RTT (Round-Trip Time):', connection.rtt, 'ms');
+                  }
+                  
+                 if (navigator.onLine) {
+                    const onlineMessage = await subscribe(name, email)
+                    createToaster(onlineMessage)
+                    //await sendOnline(name, email)
+                }else{
+                    registerSync('./service_worker.js');
+                    const offlineMessage = await addMessage(name, email);
+                    createToaster(offlineMessage)
                 }
-                await registerSync('./service_worker.js');
-                await addMessage(name, email);
-                    }      
-                }
+                    
+            }
+        }
         catch(err){
-            console.error(err, "Unable to subscribe")
+             createToaster("Unable to subscribe")
+             console.error(err, "Unable to subscribe")
         }
         finally{
             form.elements['name'].value = "";
             form.elements['mail'].value = "";
         }     
     })
+
+        // Function to send messages online
+        const sendOnline = (name, email) => {
+            return new Promise((resolve, reject) => {
+              const xhr = new XMLHttpRequest();
+          
+              xhr.open('POST', '/subscribe', true);
+              xhr.setRequestHeader('Content-Type', 'application/json');
+          
+              xhr.onreadystatechange = () => {
+                if (xhr.readyState === XMLHttpRequest.DONE) {
+                  if (xhr.status >= 200 && xhr.status < 300) {
+                    console.log('Message sent successfully online!');
+                    createToaster('Message sent successfully online!');
+                    resolve(true); // Indicate success
+                  } else {
+                    console.error('Failed to send message online:', xhr.responseText);
+                    reject(new Error(`Server Error: ${xhr.status}`)); // Indicate failure
+                  }
+                }
+              };
+          
+              xhr.onerror = () => {
+                console.error('Network Error: Unable to send message online.');
+                reject(new Error('Network Error: Unable to send message online.'));
+              };
+          
+              xhr.send(JSON.stringify({ name, email }));
+            });
+          };
 
     
     /**
@@ -336,12 +382,15 @@ document.addEventListener('DOMContentLoaded', () => {
             navigator.serviceWorker.register('./service_worker.js', { scope: './' })
                 .then(() => {
                     console.log('ServiceWorker registered successfully.');
-     
+
                     navigator.serviceWorker.addEventListener('message', (event) => {
                         if (event.data.type === 'syncSuccess') {
                             console.log(event.data.message); // "All messages sent successfully!"
                                 createToaster(event.data.message);
                                 // createLoader(true)
+                        }
+                        else if (event.data.type === 'emailSuccess'){
+                            createToaster(event.data.message)
                         }
                     });
                 })
@@ -400,6 +449,22 @@ document.addEventListener('DOMContentLoaded', () => {
 //         }
 //     }
 //////////////////////////////////////////////////
+
+const subscribe = (name, email) => {
+    return new Promise((resolve, reject) => {
+        fetch('/subscribe', {
+                            method:'POST',
+                            headers: {
+                                'Content-Type': 'application/json', // Correct format for headers
+                            },
+                             body:JSON.stringify({name, email})
+                         })
+                         .then(res => res.json())
+                         .then(res => {resolve(res?.message)
+                        .catch((err) => {reject(err.message)})  
+    })
+})
+}
 
 ///Service worker Sync Background Task API
 const registerSync = (url) => {

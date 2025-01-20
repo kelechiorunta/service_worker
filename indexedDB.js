@@ -83,7 +83,7 @@ const openDatabase = () => {
   
       request.onsuccess = () => {
         console.log('Message added to outbox');
-        resolve();
+        resolve("Message added to outbox");
       };
   
       request.onerror = (event) => {
