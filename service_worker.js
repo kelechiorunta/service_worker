@@ -134,6 +134,7 @@ self.addEventListener('fetch', (event) => {
     // const openDB = window.indexedDB.openDB; // Use this if using a CDN
 
     self.addEventListener('sync', (event) => {
+        
         if (event.tag === 'sendMessages') {
           event.waitUntil(sendMessages());
         }
@@ -163,29 +164,31 @@ self.addEventListener('fetch', (event) => {
                     body: JSON.stringify(message),
                   });
       
-                  // Create a new transaction for deleting the message to keep the request active/pending
+                  // Create a new transaction for deleting the message
                   const deleteTransaction = db.transaction('outbox', 'readwrite');
                   const deleteStore = deleteTransaction.objectStore('outbox');
                   deleteStore.delete(message.id);
       
                   // Ensure transaction completes successfully
                   await new Promise((res, rej) => {
-
-                    deleteTransaction.oncomplete = (res) => {
-                        // Notify the main thread of success
-                    self.clients.matchAll().then((clients) => {
-                        if (clients && clients.length) {
-                        clients.forEach((client) => {
-                            client.postMessage({ type: 'syncSuccess', message: 'All messages sent successfully!' });
-                        });
-                        }
-                    });
-                        console.log("Message sent to email successfully")
-                    };
+                    deleteTransaction.oncomplete = res;
                     deleteTransaction.onerror = rej;
                   });
                 }
-    
+      
+                // Notify the main thread about offline sync success
+                self.clients.matchAll().then((clients) => {
+                  if (clients && clients.length) {
+                    clients.forEach((client) => {
+                      client.postMessage({
+                        type: 'syncSuccess',
+                        message: 'Outbox Messages now sent successfully to Email Inbox!',
+                        method: 'offline',
+                      });
+                    });
+                  }
+                });
+      
                 resolve();
               } catch (error) {
                 console.error('Failed to send messages:', error);
@@ -206,10 +209,6 @@ self.addEventListener('fetch', (event) => {
         });
       };
       
-      
-      
-
-
 // FORMER CODE
 // self.addEventListener('sync', (event) => {
 //     if (event.tag === 'sendMessages'){
