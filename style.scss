@@ -688,10 +688,12 @@ form {
     background-color: #04AA6D;
     color: white;
     border: none;
+    position: relative;
   }
   
   input[type=submit]:hover {
     opacity: 0.8;
+    cursor: pointer;
   }
 
   .section-cta{
@@ -714,7 +716,54 @@ form {
     form{
         width:50%;
         height: auto;
+        .container:nth-child(3){
+            position: relative;
+            display: flex;
+             align-items: center;
+            //justify-content: center;
+            // background-color: blue;
+            .spinner_container{
+                z-index: 10;
+                width: 100%;
+                position:absolute;
+                right:0 ;
+                top: 0;
+                height: 100%;
+                inset: 0;
+                background-color: transparent;//rgba(0,0,0,0.1);
+                place-content: center;
+                display: none;
+            }
+            .spinner{
+                border: 3px solid white;
+                margin: auto;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                width: 30px;
+                height: 30px;
+                border-radius: 50%;
+                border-top: 3px solid green;
+                border-bottom: 3px solid green;
+                animation: spin 2s linear infinite;
+        
+            }
+        }
     }
+  }
+
+  @media only screen and (max-width: 768px) { 
+    .section-cta{
+        flex-direction: column;
+        gap: 1rem;
+        form{
+            width:100%;
+        }
+        figcaption{
+            width: 100%;
+        }
+    }
+    
   }
 
 /*

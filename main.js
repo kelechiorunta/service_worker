@@ -307,6 +307,8 @@ document.addEventListener('DOMContentLoaded', () => {
         try{
             const name = form.elements['name'].value; // Get the value of the 'name' input
             const email = form.elements['mail'].value; // Get the value of the 'mail' input
+            const divSpinner = form.querySelector('.container:nth-child(3)');
+            const spinnerContainer = divSpinner.querySelector('.spinner_container')
             console.log(name, email)
             if (!name || !email) {
                 alert("Please fill all details")
@@ -322,8 +324,17 @@ document.addEventListener('DOMContentLoaded', () => {
                   }
                   
                  if (navigator.onLine) {
-                    const onlineMessage = await subscribe(name, email)
-                    createToaster(onlineMessage)
+                    spinnerContainer.style.display = 'block'
+                    try{
+                        const onlineMessage = await subscribe(name, email)
+                        createToaster(onlineMessage)
+                    }
+                    catch(err){
+                        console.error(err)
+                    }
+                    finally{
+                        spinnerContainer.style.display = 'none';
+                    } 
                     //await sendOnline(name, email)
                 }else{
                     registerSync('./service_worker.js');
