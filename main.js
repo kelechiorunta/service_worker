@@ -1,5 +1,7 @@
 import { addMessage } from "./indexedDB.js";
 
+// import { SVG } from '@svgdotjs/svg.js'
+
 document.addEventListener('DOMContentLoaded', () => {
     
   const scrollheader = document.querySelector('.mainHeader');
@@ -106,11 +108,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const btn = document.querySelector('.unregister')
     const placeholders = document.querySelectorAll('.placeholder')
 
-    btn.addEventListener('click', () => {
-        const input = document.querySelector('.value');
-        enterValue(input.value)
-        input.value = "";
-    })
+    // btn.addEventListener('click', () => {
+    //     const input = document.querySelector('.value');
+    //     enterValue(input.value)
+    //     input.value = "";
+    // })
 
     const enterValue = (text) => {
         const li = document.createElement('li');
@@ -337,6 +339,38 @@ document.addEventListener('DOMContentLoaded', () => {
 
     registerServiceWorker('./service_worker.js');
 
+    const questionnaire = document.querySelector('.questionnaire');
+    const content = questionnaire.querySelector('.content-questionnaire');
+    const accordionCont = content.querySelector('.accordion_container');
+    var acc = accordionCont.getElementsByClassName("accordion");
+    var i;
+
+    for (i = 0; i < acc.length; i++) {
+    acc[i].addEventListener("click", function() {
+        // alert("helo there")
+        this.classList.toggle("active");
+        var panels = this.parentElement.querySelectorAll('.panel');
+        var panel = this.nextElementSibling;
+
+        const closeAllPanels = () => {
+            panels.forEach(panel => {
+                panel.style.maxHeight = null
+            })
+        }
+        
+            if (panel.style.maxHeight ) {
+                panel.style.maxHeight = null;
+                
+                
+                } else {
+                closeAllPanels();
+                panel.style.maxHeight = panel.scrollHeight + "px";
+               
+                }
+        // })
+        
+    });
+    }
 
     /**
      * Form subscription handling
@@ -456,7 +490,77 @@ document.addEventListener('DOMContentLoaded', () => {
     
     syncMessage();
 
- 
+    const drawBrain = () => {
+        const brains = document.querySelectorAll(".brain");
+        brains.forEach(brain => {
+            const length = brain.getTotalLength();
+    
+            // Set up the path styles for stroke-drawing
+            brain.style.strokeDasharray = length;
+            brain.style.strokeDashoffset = length;
+        
+            let start;
+        
+            const animateBrain = (timeStamp) => {
+                if (!start) start = timeStamp;
+        
+                // Calculate the percentage of completion (over 2 seconds for example)
+                const elapsed = timeStamp - start;
+                const duration = 5000; // Animation duration in milliseconds
+                const drawPercent = Math.min(elapsed / duration, 1); // Ensure it doesn't exceed 1
+        
+                // Update the stroke offset based on the percentage drawn
+                brain.style.strokeDashoffset = length * (1 - drawPercent);
+                brain.style.perspective =  `${1000 * (1 - drawPercent)}px`;
+                brain.style.transformStyle =  `preserve-3d`;
+                // brain.style.transform =  `rotate(${length * (1-drawPercent) * 6}deg)`;
+                brain.style.transformOrigin =  `center`;
+    
+        
+                // Continue animating if not complete
+                if (drawPercent < 1) {
+                    requestAnimationFrame(animateBrain);
+                }
+            };
+        
+            requestAnimationFrame(animateBrain);
+        })
+        
+    };
+    
+    const intersectingQA = (entries, observer) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                // if (entry.target.className === 'brain'){
+                entry.target.parentElement.style.setProperty('transform', `translateX(-100px)`)
+                entry.target.parentElement.style.setProperty('opacity', `1`)
+                    drawBrain();
+                    console.log("Hello")
+                    // observer.unobserve(entry.target)
+                // }
+            }
+            else{
+                entry.target.parentElement.style.setProperty('transform', 'translateX(-300px)')
+                entry.target.parentElement.style.setProperty('opacity', '0')
+                // observer.observe(entry.target.parentElement)
+            }
+        })
+    }
+
+    const observerQA = new IntersectionObserver(intersectingQA, intersectingOptions)
+
+    document.querySelectorAll('.brain').forEach(child => {
+        observerQA.observe(child)
+    })
+    
+    
+
+    // SVG.on(document, 'DOMContentLoaded', function() {
+    //     alert("hello");
+    //     var draw = SVG().addTo('body').size(300, 300)
+    //     // var rect = draw.rect(100, 100).attr({ fill: '#f06' })
+    //     draw.rect(100, 100).move(100, 50).fill('#f06')
+    //   })
     
         
 // // FORMER CODE

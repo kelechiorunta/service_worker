@@ -1,3 +1,4 @@
+@charset "UTF-8";
 *, *::after, *::before {
   box-sizing: border-box;
   margin: 0;
@@ -517,6 +518,37 @@ h1 {
   margin: auto;
 }
 
+.questionnaire-parallax {
+  /* The image used */
+  background-image: url("./imgs/Reflections.jpg");
+  width: 100%;
+  /* Full height */
+  height: 50vh;
+  position: relative;
+  /* Create the parallax scrolling effect */
+  background-attachment: fixed;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+.questionnaire-parallax::before {
+  content: "";
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 10;
+}
+.questionnaire-parallax h4 {
+  color: white;
+  font-size: 4vw;
+  text-align: center;
+  padding: 2rem;
+  width: 100%;
+  display: block;
+  z-index: 50;
+}
+
 .iframe {
   max-height: 100vh;
   font-size: 2vw;
@@ -860,4 +892,108 @@ TOASTER IMPLEMENTATION
   100% {
     transform: translateY(20px);
   }
+}
+.questionnaire {
+  width: 100%;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  background-color: rgba(255, 255, 255, 0.5);
+  border: 4vw solid rgba(0, 0, 0, 0.8);
+}
+.questionnaire .title-questionnaire {
+  color: #05aa6d;
+  font-size: 4vw;
+  text-align: center;
+  padding: 2rem;
+  width: 100%;
+  display: block;
+}
+.questionnaire .content-questionnaire {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 2rem;
+  width: 100%;
+  border: 2vw solid gray;
+  background-color: #04AA6D;
+  background-image: url("./imgs/partners/mobile.png");
+  background-position: center;
+  background-size: cover;
+  background-attachment: fixed;
+  /* Style the buttons that are used to open and close the accordion panel */
+}
+.questionnaire .content-questionnaire .accordion_container {
+  border-radius: 10px;
+  padding: 1rem;
+}
+.questionnaire .content-questionnaire .accordion_container .accordion {
+  text-transform: uppercase;
+  font-weight: 500;
+  outline: 2px soild black;
+  background-color: #eee;
+  color: #444;
+  cursor: pointer;
+  padding: 18px;
+  width: 100%;
+  border: none;
+  text-align: left;
+  outline: 2px solid black;
+  font-size: 1.3vw;
+  transition: 0.4s;
+}
+.questionnaire .content-questionnaire .accordion_container .accordion:after {
+  content: "➕"; /* Unicode character for "plus" sign (+) */
+  font-size: 13px;
+  color: #777;
+  float: right;
+  margin-left: 5px;
+  margin-top: 7px;
+}
+.questionnaire .content-questionnaire .accordion_container .active:after {
+  content: "➖"; /* Unicode character for "minus" sign (-) */
+}
+.questionnaire .content-questionnaire .accordion_container .active, .questionnaire .content-questionnaire .accordion_container .accordion:hover {
+  background-color: #ccc;
+}
+.questionnaire .content-questionnaire .accordion_container .panel {
+  padding: 0 18px;
+  background-color: white;
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.2s ease-out;
+}
+.questionnaire .content-questionnaire .accordion_container .panel p {
+  padding: 1rem;
+}
+.questionnaire .content-questionnaire .svg_container {
+  border-radius: 100%;
+  box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.8);
+  padding: 2rem;
+  width: 300px;
+  height: 300px;
+}
+.questionnaire .content-questionnaire .svg_container #book {
+  width: auto;
+  height: auto;
+  transform: translateX(0%);
+  opacity: 1;
+  transition: all 2s ease-in-out;
+}
+
+.testimonials {
+  bottom: 0;
+  left: 0;
+  min-height: 50vh;
+  background-color: #04AA6D;
+  width: 100%;
+}
+
+footer {
+  bottom: 0;
+  left: 0;
+  min-height: 50vh;
+  background-color: #000000;
+  width: 100%;
 }/*# sourceMappingURL=style.css.map */
