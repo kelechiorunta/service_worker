@@ -289,6 +289,48 @@ document.addEventListener('DOMContentLoaded', () => {
     var height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
     var scrolled = (winScroll / height) * 100;
     progressBar.style.width = scrolled + "%";
+
+    // Find scroll percentage on scroll (using cross-browser properties), and offset dash same amount as percentage scrolled
+    // window.addEventListener("scroll", directUser);
+
+    const directUser = () => {
+        // Get the <path> element and its length
+        const downArrow = document.getElementById("downArrow");
+        const length = downArrow.getTotalLength();
+    
+        // Set up the path styles for stroke-drawing
+        downArrow.style.strokeDasharray = length;
+        downArrow.style.strokeDashoffset = length;
+    
+        // Function to handle the scroll event
+        const handleScroll = () => {
+            // Calculate scroll percentage
+            const scrollTop = document.body.scrollTop || document.documentElement.scrollTop;
+            const scrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            const scrollPercent = scrollTop / scrollHeight;
+    
+            // Adjust the strokeDashoffset to draw the outline
+            const draw = length * scrollPercent;
+            downArrow.style.strokeDashoffset = length - draw;
+            if (draw >= length) {
+                downArrow.style.fill = 'white'
+            }else if (draw < length - 6){
+                downArrow.style.fill = 'green'
+                downArrow.style.setProperty('transform', `rotate(${draw * 1}deg)`)
+                downArrow.style.setProperty('transform-style', `preserve-3d`)
+                downArrow.style.setProperty('transform-origin', `center`)
+            }
+        };
+    
+        // Attach the scroll event listener
+        window.addEventListener("scroll", handleScroll);
+    
+        // Call the handler once to set the initial state
+        handleScroll();
+    };
+    
+    // Initialize the function
+    directUser();
     }
 
     document.addEventListener('scroll', scrollProgress);
@@ -414,8 +456,9 @@ document.addEventListener('DOMContentLoaded', () => {
     
     syncMessage();
 
-
+ 
     
+        
 // // FORMER CODE
 //     subscriptionBtn.addEventListener('click', (event) => {
 //         event.preventDefault();
