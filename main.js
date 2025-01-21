@@ -7,7 +7,8 @@ document.addEventListener('DOMContentLoaded', () => {
   const scrollContainer = scrollheader.querySelector('.progress-container');
   const progressBar = scrollContainer.querySelector('.progress-bar');
   const imgSection = document.querySelector('.img_section');
-  const imgContainer = imgSection.querySelectorAll('.img_container')
+  const imgContainer = imgSection.querySelectorAll('.img_container');
+  const sliderBtn = document.querySelector('.startSlider')
 
   //Implementing the modern Navigation API over the legacy history API
   imgContainer.forEach((container, index) => {
@@ -413,7 +414,6 @@ document.addEventListener('DOMContentLoaded', () => {
     
     syncMessage();
 
-     
 
     
 // // FORMER CODE
@@ -530,7 +530,7 @@ const createToaster = (text) => {
  
      // Calculate progress based on time elapsed
      const elapsed = timestamp - start;
-     const progress = Math.min(elapsed / 2000, 1); // Animate over 2 seconds (2000ms)
+     const progress = Math.min(elapsed / 1000, 1); // Animate over 2 seconds (2000ms)
  
      // Update strokeDashoffset based on progress
      triangle.style.strokeDashoffset = length * (1 - progress);
@@ -557,6 +557,7 @@ const createToaster = (text) => {
 
   ////////////////////////////////////////////////
 })
+
     let myslides;
     let slideContainer = document.querySelector('.slide_container');
     if (slideContainer) {
