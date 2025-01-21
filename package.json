@@ -16,6 +16,7 @@
   "license": "ISC",
   "description": "Service worker learning application with Node and Javascript",
   "dependencies": {
+    "@svgdotjs/svg.js": "^3.2.4",
     "idb": "^8.0.1",
     "nodemailer": "^6.9.16",
     "sharp": "^0.33.5",
