@@ -11,6 +11,10 @@ document.addEventListener('DOMContentLoaded', () => {
   const imgSection = document.querySelector('.img_section');
   const imgContainer = imgSection.querySelectorAll('.img_container');
   const sliderBtn = document.querySelector('.startSlider')
+  const testimonialCont = document.querySelector('.testimonials'); 
+  const slideShowCont = testimonialCont.querySelector('.slideshow-container');
+  const slidePrevBtn = slideShowCont.querySelector('.prev'); 
+  const slideNextBtn = slideShowCont.querySelector('.next'); 
 
   //Implementing the modern Navigation API over the legacy history API
   imgContainer.forEach((container, index) => {
@@ -108,12 +112,14 @@ document.addEventListener('DOMContentLoaded', () => {
     const btn = document.querySelector('.unregister')
     const placeholders = document.querySelectorAll('.placeholder')
 
-    // btn.addEventListener('click', () => {
-    //     const input = document.querySelector('.value');
-    //     enterValue(input.value)
-    //     input.value = "";
-    // })
-
+    if (btn) {
+        btn.addEventListener('click', () => {
+            const input = document.querySelector('.value');
+            enterValue(input.value)
+            input.value = "";
+        })
+    }
+   
     const enterValue = (text) => {
         const li = document.createElement('li');
         li.textContent = text;
@@ -339,6 +345,46 @@ document.addEventListener('DOMContentLoaded', () => {
 
     registerServiceWorker('./service_worker.js');
 
+
+    let slideIndex = 1;
+    showSlides(slideIndex);
+
+    // Next/previous controls
+    function plusSlides(n) {
+    showSlides(slideIndex += n);
+    }
+
+    // Thumbnail image controls
+    function currentSlide(n) {
+    showSlides(slideIndex = n);
+    }
+
+    function showSlides(n) {
+    let i;
+    let slides = document.getElementsByClassName("mySlides");
+    let dots = document.getElementsByClassName("dot");
+    if (n > slides.length) {slideIndex = 1}
+    if (n < 1) {slideIndex = slides.length}
+    for (i = 0; i < slides.length; i++) {
+        slides[i].style.display = "none";
+    }
+    for (i = 0; i < dots.length; i++) {
+        dots[i].className = dots[i].className.replace(" active", "");
+    }
+    slides[slideIndex-1].style.display = "block";
+    dots[slideIndex-1].className += " active";
+    }
+
+    slidePrevBtn.onclick = () => {
+        plusSlides(-1)
+    }
+
+    slideNextBtn.onclick = () => {
+        plusSlides(1)
+    }
+
+
+    /**The Accordion script */
     const questionnaire = document.querySelector('.questionnaire');
     const content = questionnaire.querySelector('.content-questionnaire');
     const accordionCont = content.querySelector('.accordion_container');
@@ -490,7 +536,7 @@ document.addEventListener('DOMContentLoaded', () => {
     
     syncMessage();
 
-    const drawBrain = () => {
+    const drawBook = () => {
         const brains = document.querySelectorAll(".brain");
         brains.forEach(brain => {
             const length = brain.getTotalLength();
@@ -501,7 +547,7 @@ document.addEventListener('DOMContentLoaded', () => {
         
             let start;
         
-            const animateBrain = (timeStamp) => {
+            const animateBook = (timeStamp) => {
                 if (!start) start = timeStamp;
         
                 // Calculate the percentage of completion (over 2 seconds for example)
@@ -519,11 +565,11 @@ document.addEventListener('DOMContentLoaded', () => {
         
                 // Continue animating if not complete
                 if (drawPercent < 1) {
-                    requestAnimationFrame(animateBrain);
+                    requestAnimationFrame(animateBook);
                 }
             };
         
-            requestAnimationFrame(animateBrain);
+            requestAnimationFrame(animateBook);
         })
         
     };
@@ -534,7 +580,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 // if (entry.target.className === 'brain'){
                 entry.target.parentElement.style.setProperty('transform', `translateX(-100px)`)
                 entry.target.parentElement.style.setProperty('opacity', `1`)
-                    drawBrain();
+                    drawBook();
                     console.log("Hello")
                     // observer.unobserve(entry.target)
                 // }
